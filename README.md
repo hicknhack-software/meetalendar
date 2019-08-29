@@ -54,17 +54,18 @@ How to get the Meetup OAuth2 Authentification set up:
 
 - Go to the meetup web console to tab OAuth Consumers: [Meetup OAUth Consumers](https://secure.meetup.com/meetup_api/oauth_consumers/)
 - Click on »Create one now«
-  - I filled this page in like this:
-    - {
-      Consumer name: Meetalendar,
-      Application Website: https://www.hicknhack-software.com/it-events,
-      Who are you requesting access for?: I am requesting access for my organization,
-      What is the organization name?: HicknHack Software GmbH,
-      Phone number: 0123456789,
-      Description: We use the Meetup API to gather IT-Events in our city and surroundings to display them as part of our Local IT-Event Calendar. Up to now this was done by hand and shall now be replaced by some logic. (The calendar is public and free of cost or commercial interests.),
-      Platform Terms of Service: Yes, I agree.,
-    }
-    -> The phone number is random, please check [our website](https://www.hicknhack-software.com/) if you want to do buisness with us.
+
+I filled this page in like this:
+```text
+Consumer name: Meetalendar,
+Application Website: https://www.hicknhack-software.com/it-events,
+Who are you requesting access for?: I am requesting access for my organization,
+What is the organization name?: HicknHack Software GmbH,
+Phone number: 0123456789,
+Description: We use the Meetup API to gather IT-Events in our city and surroundings to display them as part of our Local IT-Event Calendar. Up to now this was done by hand and shall now be replaced by some logic. (The calendar is public and free of cost or commercial interests.),
+Platform Terms of Service: Yes, I agree.,
+```
+-> The phone number is random, please check [our website](https://www.hicknhack-software.com/) if you want to do buisness with us.
 
 With this altered to fit your company and everything setup correctly you might have to wait one or two days until Meetup grants you premission. (When i tried this it seemed to be done by hand.)
 
@@ -74,24 +75,24 @@ When the time has come and your credentials are granted you will have to put the
 Hot to get the Google Calendar OAuth2 Authentification set up:
 
 - Follow this good source: [Google Ruby OAuth2 official Tutorial](https://developers.google.com/calendar/quickstart/ruby) Wich has a nice Button that seems to have a lot of functionaity. If confused it might help make things easier to setup. (Especially getting the credentials.json)
-- Good general expanation: [Source of belows steps](https://support.google.com/cloud/answer/6158849?hl=en) -> That i "quopied" it's most relevant sections:
+- Good general expanation: [Source of belows steps](https://support.google.com/cloud/answer/6158849?hl=en) -> That i "quopied" it's most relevant section:
 
-{
-  _Setting up OAuth 2.0_
+```text
+_Setting up OAuth 2.0_
 
-  To create an OAuth 2.0 client ID in the console:
-  - Go to the [Google Cloud Platform Console](https://console.cloud.google.com/?pli=1).
-  - From the projects list, select a project or create a new one.
-  - If the APIs & services page isn't already open, open the console left side menu and select APIs & services.
-  - On the left, click Credentials.
-  - Click New Credentials, then select OAuth client ID.
-  - Note: If you're unsure whether OAuth 2.0 is appropriate for your project, select Help me choose and follow the instructions to pick the right credentials.
+To create an OAuth 2.0 client ID in the console:
+- Go to the [Google Cloud Platform Console](https://console.cloud.google.com/?pli=1).
+- From the projects list, select a project or create a new one.
+- If the APIs & services page isn't already open, open the console left side menu and select APIs & services.
+- On the left, click Credentials.
+- Click New Credentials, then select OAuth client ID.
+- Note: If you're unsure whether OAuth 2.0 is appropriate for your project, select Help me choose and follow the instructions to pick the right credentials.
 
-  - Select the appropriate application type for your project and enter any additional information required. Application types are described in more detail in the following sections.
-  - If this is your first time creating a client ID, you can also configure your consent screen by clicking Consent Screen. (The following procedure explains how to set up the Consent screen.) You won't be prompted to configure the consent screen after you do it the first time.
-  - Click Create client ID
-  - To delete a client ID, go to the Credentials page, check the box next to the ID, and then click Delete.
-}
+- Select the appropriate application type for your project and enter any additional information required. Application types are described in more detail in the following sections.
+- If this is your first time creating a client ID, you can also configure your consent screen by clicking Consent Screen. (The following procedure explains how to set up the Consent screen.) You won't be prompted to configure the consent screen after you do it the first time.
+- Click Create client ID
+- To delete a client ID, go to the Credentials page, check the box next to the ID, and then click Delete.
+```
 
 ### Putting both credentials in one credential.json file
 
@@ -137,7 +138,3 @@ Basically the google calendar credentials where wrapped and put a nesting lower 
 
 If you need help setting up the needed ```MEETALENDAR_CREDENTIALS_FILEPATH``` environment variable then find help from this [friendly duck](https://duckduckgo.com/?q=set+environment+variable+for+windows%2Flinux%2Fmac&ia=web).
 
-
-## How to use the Meetup Website section
-
-<!-- I'm going to explain the intended use of the Meetup section in the Website. How to Authorize, find Meetup Groups, Select and add them. And a little explanation what the System is going to do "now that you set it up". (Since there is nothing happening without the other part of the system.) -->
