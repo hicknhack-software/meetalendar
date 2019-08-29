@@ -1,0 +1,6 @@
+.page-header
+  h2= 'Authorize Calendar Access'
+
+.goto_url = link_to "Please follow this link and grant this application access to your calendar.", @goto_url, target: "_blank"
+= comfy_form_with url: :authorize_calendar_comfy_admin_meetalendar_meetups, method: :get do |authorize_calendar|
+  = render 'authorize_calendar', form: authorize_calendar

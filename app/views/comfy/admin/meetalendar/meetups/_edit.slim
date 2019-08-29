@@ -1,0 +1,6 @@
+. Currently approved cities:
+= text_field_tag "edited_approved_cities", @meetup.approved_cities.to_s, class: "custom-control"
+
+= form.form_actions do
+  = form.submit "Save Edited", class: "btn btn-primary"
+  = link_to 'Cancel', edit_comfy_admin_meetalendar_meetup_path(@site), class: "btn btn-link"
