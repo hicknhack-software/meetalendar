@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.3.0"
 
-  s.add_dependency 'rails', '~> 5.2.2'
+  s.add_dependency 'rails', '~> 5.2', '>= 5.2.2'
 
   # httpclient for manual auth calls
   s.add_dependency 'httpclient', '~> 2.8', '>= 2.8.3'
