@@ -4,7 +4,7 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'comfortable_mexican_sofa', github: 'hicknhack-software/comfortable-mexican-sofa', ref: '7ea81679'
+gem 'comfortable_mexican_sofa', '~> 2.0', '>= 2.0.18'
 
 group :development, :test do
   gem "kaminari", "~> 1.1.1"

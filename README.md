@@ -6,6 +6,7 @@ This gem prensents all the needed functionality to search for relevant groups on
 ## Usage
 With the gem installed as described, it will have added itself to the admin interface. Navigte to it and find the two buttons that help you authorize the client with the meetup api and the google calendar api.
 After authorization you can search for Meetup groups via the 'Add Groups' button. There you will be presented with a search mask formular with some default values for the 'find groups' Meetup Api call. (Check the [Meetup Api documentation](https://secure.meetup.com/meetup_api/console/?path=/find/groups) for more options.)
+
 Then click search and you will be presented with the found groups for your search mask. (Or with groups in the area if you entered to little information and Meetup took your accounts location info to find groups near you.)
 Then select the groups you want to "subscribe" to, enter the cities names that are "approved" and save them. With approved is meant, that only events of a selected group that are happening in an approved city are copied over into the google calendar. Thus avoiding "spamming", your google calendar with events that don't happen in the approved cities near you. (Most groups happen to meet in the same place each time while other groups events can happen to be spread out quite far.)
 
