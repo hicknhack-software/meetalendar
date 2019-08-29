@@ -26,7 +26,7 @@ ul.list
               .events
 
                 .past_events
-                  h5 Past Events
+                  h5 Last Event
                   - if @found_last_grouped_events&.key?(group[:id])
                     - @found_last_grouped_events[group[:id]].each do |event|
                         .event
