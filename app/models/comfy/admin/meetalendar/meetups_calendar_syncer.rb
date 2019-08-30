@@ -105,31 +105,78 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
     parsed_path
   end
 
-  def self.gather_meetups_in_approved_cities(time_now)
+  # TODO(Schau):
+  # - [_] If a MU group is selected into the database and no approved cities are entered, then this groups events will all be copied into the google calendar.
+  # - [_] If a MU group is selected into the database and one ore more approved cities are entered seperated by comma, then this groups events, that take place in the approved cities will be copied over. However, sometimes MU events are created without an event location set yet then:
+  #   - [_] If a MU group has events that have no location info yet, then those groups events should be copied over for now.
+  #     - [_] If in a later syncorinzation the algorithm recognizes this event and it now has a location specified, it should test if this event should have been copied over to begin with and if not it should delete the event from the calendar or update it if it should have been there.
+
+
+
+  def self.gather_selected_events(time_now)
     @meetups = MeetupGroup.all
     group_ids = @meetups.map{ |meetup| meetup.group_id }
     group_ids_approved_cities = @meetups.map{|meetup| ["#{meetup.group_id}", meetup.approved_cities.downcase.split(%r{,\s*})]}.to_h
 
+    # TODO(Schau): Lets say someone (like me) called this function very often in a short time-frame, then he might get absolutely no events whatsoever and then this algorithm will give no events "to keep in" and the whole google calendar gets rekt/deleted -> that would be super cake so i need to implement some sort of check if i just didn't get a proper answear and should stop the algorithm right there or i did get an answear where everything is empty and then i can delete it all but only if that is an actual correct reply...
     request_result = Comfy::Admin::Meetalendar::MeetupsCalendarSyncer.get_path_authorized("/find/upcoming_events", {"page": 200})
 
     upcoming_events = request_result.nil? ? {} : request_result
-    upcoming_events = upcoming_events.nil? || upcoming_events.empty? ? [] : upcoming_events["events"]
-    upcoming_events_of_groups = upcoming_events.select{|event|
-      !event["group"].nil? &&
-      group_ids.include?(event["group"]["id"]) &&
-      !event["venue"].nil? &&
-      group_ids_approved_cities["#{event["group"]["id"]}"].include?(event['venue']['city'].to_s.downcase)}
+    upcoming_events = upcoming_events.nil? || upcoming_events.empty? ? [] : upcoming_events.dig("events")
+    selected_groups_upcoming_events = upcoming_events.select{|event| group_ids.include?("#{event.dig("group", "id")}")}
 
-    grouped_upcoming_events = upcoming_events_of_groups.group_by{|event| event["group"]["id"]}
+    upcoming_events_of_groups = selected_groups_upcoming_events.select do |event|
+      selected_group_has_approved_cities = !group_ids_approved_cities.dig("#{event.dig("group", "id")}").empty?
+
+      event_has_group = !event.dig("group").nil?
+      events_group_id_is_in_selected_group_ids = group_ids.include?(event.dig("group", "id"))
+
+      event_has_no_venue = event.dig("venue").nil?
+      event_has_venue = !event.dig("venue").nil?
+
+      event_venue_in_approved_cities = !selected_group_has_approved_cities ? true : group_ids_approved_cities.dig("#{event.dig("group", "id")}").include?(event.dig('venue', 'city').to_s.downcase)
+
+      !selected_group_has_approved_cities ||
+        (selected_group_has_approved_cities &&
+        event_has_group && events_group_id_is_in_selected_group_ids &&
+        (event_has_no_venue || (event_has_venue && event_venue_in_approved_cities)))
+    end
+
+    ###################################################################
+    # TODO(Schau): I don't seem to get the events correctly anymore...
+    ###################################################################
+
+    grouped_upcoming_events = upcoming_events_of_groups.group_by{|event| event.dig("group", "id")}
     # NOTE(Schau): Very likely i will be able to refactor this to be more clear.
-    limited_upcoming_events = Hash[grouped_upcoming_events.map{|k, v| [k, v.select{|event| Time.at(Rational(event["time"].to_i, 1000)) > time_now}.sort_by{|event| event["time"].to_i}.take(2)]}].select{|k, v| v.any?}
+    limited_upcoming_events = Hash[grouped_upcoming_events.map{|k, v| [k, v.select{|event| Time.at(Rational(event.dig("time").to_i, 1000)) > time_now}.sort_by{|event| event.dig("time").to_i}.take(2)]}].select{|k, v| v.any?}
     listed_upcoming_events = limited_upcoming_events.map{|k, v| v.first}
   end
 
-  def self.sync_meetups_to_calendar(listed_upcoming_events)
+  def self.sync_meetups_to_calendar(listed_upcoming_events, calendar_id, time_now, time_in_future)
     calendar_service = Google::Apis::CalendarV3::CalendarService.new
     calendar_service.client_options.application_name = GOOGLE_CALENDAR_AUTH_APPLICATION_NAME
     calendar_service.authorization = authorize
+
+    begin
+      all_future_google_calendar_events = calendar_service.list_events(calendar_id, {time_max: DateTime.parse(time_in_future.to_s).to_s, time_min: DateTime.parse(time_now.to_s).to_s})
+    rescue => exception
+        Rails.logger.error "An exception occurred while loading current events from the google calendar. Exception: #{exception.message}"
+        raise ::ActiveResource::ClientError, "Could not load current events from the google calendar."
+    end
+
+    # binding.pry
+
+    to_keep_event_gcal_ids = listed_upcoming_events.map{|mu_event| Digest::MD5.hexdigest(mu_event.dig("id").to_s)}
+    to_delete_event_ids = all_future_google_calendar_events.items.map{|gcal_event| gcal_event.id}.select{|gcal_event_id| !to_keep_event_gcal_ids.include?(gcal_event_id)}
+
+    to_delete_event_ids.each{ |event_id|
+      begin
+        calendar_service.delete_event(calendar_id, event_id)
+      rescue => exception
+          Rails.logger.error "An exception occurred while deleting unsubscribed events from the google calendar. Exception: #{exception.message}"
+          raise ::ActiveResource::ClientError, "Could not delete unsubscribed events from the google calendar."
+      end
+    }
 
     listed_upcoming_events.each{ |event|
       if event.key?('venue')
@@ -164,10 +211,10 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
 
       new_event = Google::Apis::CalendarV3::Event.new(new_event_hash)
       begin
-        calendar_service.update_event('primary', new_event.id, new_event)
+        calendar_service.update_event(calendar_id, new_event.id, new_event)
       rescue # TODO(Schau): If possible, figure out the exact exceptions to minimize "braodness of healing"
         begin
-          calendar_service.insert_event('primary', new_event)
+          calendar_service.insert_event(calendar_id, new_event)
         rescue => exception
             Rails.logger.error "An exception occurred while updating or inserting events into the google calendar. Exception: #{exception.message}"
             raise ::ActiveResource::ClientError, "Could not update or insert event into the google calendar."
