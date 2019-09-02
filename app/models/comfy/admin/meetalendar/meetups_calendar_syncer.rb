@@ -75,7 +75,7 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
         request_query_args = {"client_id": meetup_credentials["client_id"], "client_secret": meetup_credentials["client_secret"], "grant_type": "refresh_token", "refresh_token": "#{current_tokens["refresh_token"]}"}
         post_return = client.post_content(request_uri, request_query_args)
 
-        if post_return.nil? || post_return.status == 401
+        if post_return.nil? || post_return.status == Rack::Utils::SYMBOL_TO_STATUS_CODE[:unauthorized]
           Rails.logger.error "Authorization with current token failed and token could not be refreshed. Was authorization to meetup api revoked?"
           raise ::ActiveResource::UnauthorizedAccess, "To access this path you need to have authenticated the Meetup API successfully."
         else
@@ -88,8 +88,8 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
           request_query_args = args.merge({"access_token" => (current_tokens["access_token"])})
           result = client.request("GET", request_uri, request_query_args)
   
-          if result.nil? || result.status == 401
-            # really no success
+          if result.nil? || result.status != Rack::Utils::SYMBOL_TO_STATUS_CODE[:ok]
+            # still no success
             Rails.logger.error "Authorization with current token failed, token was refreshed but authorization still fails. Was authorization to meetup api revoked?"
             raise ::ActiveResource::UnauthorizedAccess, "To access this path you need to have authenticated the Meetup API successfully."
           else
@@ -105,25 +105,15 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
     parsed_path
   end
 
-  # TODO(Schau):
-  # - [_] If a MU group is selected into the database and no approved cities are entered, then this groups events will all be copied into the google calendar.
-  # - [_] If a MU group is selected into the database and one ore more approved cities are entered seperated by comma, then this groups events, that take place in the approved cities will be copied over. However, sometimes MU events are created without an event location set yet then:
-  #   - [_] If a MU group has events that have no location info yet, then those groups events should be copied over for now.
-  #     - [_] If in a later syncorinzation the algorithm recognizes this event and it now has a location specified, it should test if this event should have been copied over to begin with and if not it should delete the event from the calendar or update it if it should have been there.
-
-
-
   def self.gather_selected_events(time_now)
     @meetups = MeetupGroup.all
     group_ids = @meetups.map{ |meetup| meetup.group_id }
     group_ids_approved_cities = @meetups.map{|meetup| ["#{meetup.group_id}", meetup.approved_cities.downcase.split(%r{,\s*})]}.to_h
 
-    # TODO(Schau): Lets say someone (like me) called this function very often in a short time-frame, then he might get absolutely no events whatsoever and then this algorithm will give no events "to keep in" and the whole google calendar gets rekt/deleted -> that would be super cake so i need to implement some sort of check if i just didn't get a proper answear and should stop the algorithm right there or i did get an answear where everything is empty and then i can delete it all but only if that is an actual correct reply...
     request_result = Comfy::Admin::Meetalendar::MeetupsCalendarSyncer.get_path_authorized("/find/upcoming_events", {"page": 200})
 
-    upcoming_events = request_result.nil? ? {} : request_result
-    upcoming_events = upcoming_events.nil? || upcoming_events.empty? ? [] : upcoming_events.dig("events")
-    selected_groups_upcoming_events = upcoming_events.select{|event| group_ids.include?("#{event.dig("group", "id")}")}
+    upcoming_events = request_result.nil? || request_result.empty? ? [] : request_result.dig("events")
+    selected_groups_upcoming_events = upcoming_events.select{|event| group_ids.include?(event.dig("group", "id"))}
 
     upcoming_events_of_groups = selected_groups_upcoming_events.select do |event|
       selected_group_has_approved_cities = !group_ids_approved_cities.dig("#{event.dig("group", "id")}").empty?
@@ -142,14 +132,8 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
         (event_has_no_venue || (event_has_venue && event_venue_in_approved_cities)))
     end
 
-    ###################################################################
-    # TODO(Schau): I don't seem to get the events correctly anymore...
-    ###################################################################
-
     grouped_upcoming_events = upcoming_events_of_groups.group_by{|event| event.dig("group", "id")}
-    # NOTE(Schau): Very likely i will be able to refactor this to be more clear.
-    limited_upcoming_events = Hash[grouped_upcoming_events.map{|k, v| [k, v.select{|event| Time.at(Rational(event.dig("time").to_i, 1000)) > time_now}.sort_by{|event| event.dig("time").to_i}.take(2)]}].select{|k, v| v.any?}
-    listed_upcoming_events = limited_upcoming_events.map{|k, v| v.first}
+    limited_upcoming_events = grouped_upcoming_events.map{|k, v| v.select{|event| Time.at(Rational(event.dig("time").to_i, 1000)) > time_now}}.first
   end
 
   def self.sync_meetups_to_calendar(listed_upcoming_events, calendar_id, time_now, time_in_future)
@@ -164,9 +148,7 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
         raise ::ActiveResource::ClientError, "Could not load current events from the google calendar."
     end
 
-    # binding.pry
-
-    to_keep_event_gcal_ids = listed_upcoming_events.map{|mu_event| Digest::MD5.hexdigest(mu_event.dig("id").to_s)}
+    to_keep_event_gcal_ids = listed_upcoming_events.map{|mu_event| Digest::MD5.hexdigest(mu_event.dig('id').to_s)}
     to_delete_event_ids = all_future_google_calendar_events.items.map{|gcal_event| gcal_event.id}.select{|gcal_event_id| !to_keep_event_gcal_ids.include?(gcal_event_id)}
 
     to_delete_event_ids.each{ |event_id|
