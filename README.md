@@ -44,10 +44,6 @@ $ bundle exec rake db:migrate
 ## Contributing
 Just try your best. Maybe you can achieve one of these goals.
 
-- [_] Wenn keine "approved cities" eingetragen sind, (oder wenn ein * oder ähnlich eingetragen ist) dann sollen alle Termine übertragen werden, egal in welcher Stadt sie stattfinden.
-- [_] Wenn keine City in der Venue im Event eingetragen ist, dann soll dieser Termin erstmal mit übertragen werden, und sofern bei einer späteren Syncronisation festgestellt wird, dass dieses bereits im GCal eingetragene Event doch nicht hätte übertragen werden sollen, weil es in einer "nicht approvten" Stadt stattfindet, dann soll es wieder aus dem GCal gelöscht werden. (Aber nur für zukünftige Events, nicht rückwirkend auf jene, die schon stattgefunden haben.)
-- [_] Wenn die "approvten cities" geändert werden, sollen ebenfalls die Termine, die noch in der Zukunft liegen entweder hinzugefügt oder gelöscht werden im GCal.
-
 - Erweiterung der Admin-Ansicht, sodass auch einzelne bisher ausgeschlossene Events "von Hand" hinzugefügt werden können.
   - [_] Noch mal darüber sprechen, woher die Events kommen sollen? So eine Art von Suche bei der die bereits selektierten/gespeicherten Gruppen ihre nächsten (für 3 Monate) Events anzeigen und man diese trotz abweichender Städte in den GCal übertregen kann?
 
