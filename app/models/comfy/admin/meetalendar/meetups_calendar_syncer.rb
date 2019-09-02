@@ -47,12 +47,6 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
     credentials
   end
 
-  def self.add_to_key(current_key_data, to_add_data)
-    return_key_data = current_key_data.nil? ? [] : current_key_data.class == [].class ? current_key_data : [].push(current_key_data)
-    return_key_data.push(to_add_data)
-    return_key_data
-  end
-
   def self.get_path_authorized(path, args = {})
     return_hash = {}
     client = HTTPClient.new
