@@ -71,10 +71,15 @@ What is the organization name?: HicknHack Software GmbH,
 Phone number: 0123456789,
 Description: We use the Meetup API to gather IT-Events in our city and surroundings to display them as part of our Local IT-Event Calendar. Up to now this was done by hand and shall now be replaced by some logic. (The calendar is public and free of cost or commercial interests.),
 Platform Terms of Service: Yes, I agree.,
+Redirect URI: http://127.0.0.1:3000/admin
 ```
 -> The phone number is random, please check [our website](https://www.hicknhack-software.com/) if you want to do buisness with us.
 
 With this altered to fit your company and everything setup correctly you might have to wait one or two days until Meetup grants you premission. (When i tried this it seemed to be done by hand.)
+
+The Redirect URI only needs to have part of your website's adress to be the same. In my example i took the path to the admin interface. As far as i know this is used to restrict who and where one can be redirected to with a certain auth-consumer.
+When the Client sends it's authorization request to meetup it also sends the path to wich meetup is supposed to redirect to after. And if these pathes don't have the same beginning/host then it is probably a fishy request and needs to be ignored.
+(This path is editable after you successfully got your OAuth-Consumer. So if you aren't perfectly sure what path it will be exactly, enter a good guess and test if it works. If not edit it later until it does.)
 
 When the time has come and your credentials are granted you will have to put them in the credentials.json, that will also have the google calendar credentials, like shown below.
 
