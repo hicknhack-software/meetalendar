@@ -42,13 +42,11 @@ $ bundle exec rake db:migrate
 ```
 
 ## Contributing
-Just try your best. Maybe you can achieve one of these goals.
+These goals are still open:
 
-- Erweiterung der Admin-Ansicht, sodass auch einzelne bisher ausgeschlossene Events "von Hand" hinzugefügt werden können.
-  - [_] Noch mal darüber sprechen, woher die Events kommen sollen? So eine Art von Suche bei der die bereits selektierten/gespeicherten Gruppen ihre nächsten (für 3 Monate) Events anzeigen und man diese trotz abweichender Städte in den GCal übertregen kann?
+- Introduce new view (and functionality) that allows to search for upcoming events of the already chosen meetup groups. There the user can select individual events that he wants to transcribe/syncronize to the google calendar. The view should list events up to round about 2-3 month in the future if possible.
 
-- [_] Kann man erkennen, ob ein Termin "von Hand" eingetragen wurde (bei Meetup) oder ob es ein sich einfach jeden Monat zu einem bestimmten Termin wiederholt, aber noch keine Details eingetragen sind.
-  - Bei von Hand eingetragenen Terminen, die auch weit in der Zukunft liegen können, sollte man diese mit übertragen, wenn sie aber wiederholt werden ist ab 3 Monaten in der Zukunft wohl sowieso noch kein sinnvoller Inhalt vorhanden und diese sollten dann nicht übertragen werden.
+- Is it possible to check if an event is a single or recurring one? (Meetup API V3 indicates that it is.) If so and if possible get single events as far into the future as possible (2-3 month) and transcribe them. The recurring ones typically don't have accurate information up to a week before they occurr so they can be handled as they are now.
 
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
