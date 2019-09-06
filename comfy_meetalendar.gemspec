@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.version     = Meetalendar::VERSION
   s.authors     = ["Andreas Schau @ HicknHack"]
   s.email       = ["andreas.schau@hicknhack-software.com"]
-  s.homepage    = "https://www.hicknhack-software.com/"
+  s.homepage    = "https://github.com/hicknhack-software/meetalendar"
   s.summary     = "To have a section on a comfy website that allows gathering of meetup groups. So that their events can regularely be syncronized into a google calendar."
   s.description = "This gem is a Comfortable-Mexican-Sofa Add-On and prensents all the needed functionality to search for relevant groups on meetup, remember the chosen ones and offers a task that can be called regularely to transcribe the meetup-groups events to a google calendar. TLDR: It allows the user to subscribe to meetup-groups events."
   s.license     = "MIT"
