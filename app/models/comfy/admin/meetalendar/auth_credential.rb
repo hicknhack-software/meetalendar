@@ -3,11 +3,6 @@ require 'attr_encrypted'
 class Comfy::Admin::Meetalendar::AuthCredential < ApplicationRecord
   self.table_name = "meetalendar_auth_credentials"
 
-  # TODO(Schau): There might be a better place for this function
-  def self.expand_env(str)
-    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
-  end
-
   attr_encrypted :access_token, key: Rails.application.key_generator.generate_key('access_token', 32)
   attr_encrypted :refresh_token, key: Rails.application.key_generator.generate_key('refresh_token', 32)
 
