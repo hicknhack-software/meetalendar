@@ -8,8 +8,8 @@ class Comfy::Admin::Meetalendar::AuthCredential < ApplicationRecord
     str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
   end
 
-  attr_encrypted :access_token, key: Rails.application.secrets.secret_key_base.to_s.bytes[0..31].pack("c" * 32)
-  attr_encrypted :refresh_token, key: Rails.application.secrets.secret_key_base.to_s.bytes[0..31].pack("c" * 32)
+  attr_encrypted :access_token, key: Rails.application.key_generator.generate_key('access_token', 32)
+  attr_encrypted :refresh_token, key: Rails.application.key_generator.generate_key('refresh_token', 32)
 
   def scope
     # NOTE(Schau): Scope expected to be a json parsable string that results in an array.
