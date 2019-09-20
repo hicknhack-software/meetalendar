@@ -50,7 +50,7 @@ module Comfy
       end
 
       def generate_views
-        directory "app/views/comfy/admin/meetalendar", "app/views/comfy/admin/meetalendar"
+        directory "app/views/meetalendar", "app/views/meetalendar"
       end
 
       def show_readme

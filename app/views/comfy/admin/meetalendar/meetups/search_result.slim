@@ -1,5 +1,0 @@
-.page-header
-  h2= 'Found Meetup Groups'
-
-= comfy_form_with model: @meetup, url: { controller: "comfy/admin/meetalendar/meetups", action: "create" } do |search_result|
-  = render 'search_result', form: search_result

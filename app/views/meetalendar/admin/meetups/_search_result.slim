@@ -30,10 +30,10 @@ ul.list
                   - if @found_last_grouped_events&.key?(group[:id])
                     - @found_last_grouped_events[group[:id]].each do |event|
                         .event
-                          .name = event["name"].to_s
+                          .name = event["name"]
                           .time
                             .start = l(Time.at(Rational(event["time"].to_i, 1000), Rational(event["utc_offset"].to_i, 24*60*601000)), format: :long)
-                          .yes_rsvp_count = event["yes_rsvp_count"].to_s + " Teilnemher"
+                          .yes_rsvp_count = "#{event["yes_rsvp_count"]} Teilnehmer"
 
                 span class="border-top my-3"
 
@@ -44,14 +44,14 @@ ul.list
                       .event
                         .name = link_to event["name"], event["link"]
                         .time
-                          .city = "In ".to_s + event.dig("venue", "city").to_s + ", Von ".to_s
-                          .start = l(Time.at(event["time"].to_i.div(1000)), format: :long)
-                          .to bis
-                          .end = l(Time.at((event["time"].to_i + event["duration"].to_i).div(1000)), format: :short)
+                          span.city => "In ${event.dig("venue", "city")}, Von"
+                          span.start => l(Time.at(event["time"].to_i.div(1000)), format: :long)
+                          span.to bis
+                          span.end =< l(Time.at((event["time"].to_i + event["duration"].to_i).div(1000)), format: :short)
                         / TODO(Schau): One could make the city name of the found events clickable so that the user easily can add this city's name to the list of approved cities. (One should research if Meetup has a way to represent each city on the planet with an id that the system gave this city's name. (Or Meetup realy relies on strings, then this doesn't quite make the effort worth.))
                         .description
                           = sanitize(event["description"])
 
 = form.form_actions do
   = form.submit "Add selected Meetup Groups", class: "btn btn-primary"
-  = link_to 'Cancel', comfy_admin_meetalendar_meetups_path(@site), class: "btn btn-link"
+  = link_to 'Cancel', meetalendar_admin_meetups_path, class: "btn btn-link"

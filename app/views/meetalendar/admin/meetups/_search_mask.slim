@@ -15,5 +15,5 @@ ruby:
 / ...
 
 = form.form_actions do
-  = form.submit "Search for Meetup Groups", class: "btn btn-primary"
-  = link_to 'Cancel', comfy_admin_meetalendar_meetups_path(@site), class: "btn btn-link"
+  = submit_tag "Search for Meetup Groups", class: "btn btn-primary"
+  = link_to 'Cancel', meetalendar_admin_meetups_path, class: "btn btn-link"

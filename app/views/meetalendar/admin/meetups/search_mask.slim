@@ -1,0 +1,5 @@
+.page-header
+  h2 Find new Meetup Groups
+  
+= comfy_form_with url: :search_result_meetalendar_admin_meetups, method: :get do |search_mask|
+  = render 'search_mask', form: search_mask

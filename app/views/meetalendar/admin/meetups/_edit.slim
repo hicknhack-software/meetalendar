@@ -1,0 +1,6 @@
+
+= form.text_field :approved_cities.to_s
+
+= form.form_actions do
+  = submit_tag "Save Edited", class: "btn btn-primary"
+  = link_to t('.cancel'), edit_meetalendar_admin_meetup_path, class: "btn btn-link"

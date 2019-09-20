@@ -1,0 +1,8 @@
+
+.form-group.row
+  label.col-form-label.col-sm-2.text-sm-right for="key_code" Enter Returned Key Code here:
+  .col-sm-10 = text_field_tag "key_code", nil, class: "form-control"
+
+= form.form_actions do
+  = submit_tag "Save Key", class: "btn btn-primary"
+  = link_to 'Cancel', meetalendar_admin_meetups_path, class: "btn btn-link"
