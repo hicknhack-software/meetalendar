@@ -2,23 +2,29 @@
 
 module Meetalendar
   class Configuration
-
-    # Application layout to be used to index blog posts.
-    # Default is 'comfy/blog/application'
-    attr_accessor :app_layout
-
-    # # Number of posts per page. Default is 10
-    # attr_accessor :posts_per_page
-
-    # # Auto-setting parameter derived from the routes
-    # attr_accessor :public_blog_path
+    attr_accessor :credentials_path
+    attr_accessor :meetup_credentials
+    attr_accessor :google_calendar_credentials
 
     # Configuration defaults
     def initialize
-      # @posts_per_page   = 10
-      @app_layout       = "comfy/meetalendar/application"
-      # @public_blog_path = nil
+      @credentials_path = ENV['MEETALENDAR_CREDENTIALS_FILEPATH'] || Rails.root.join('config', 'meetalender_credentials.json')
+      @meetup_credentials = nil
+      @google_calendar_credentials = nil
     end
 
+    def meetup_credentials
+      @meetup_credentials ||= json_credentials['meetup']
+    end
+
+    def google_calendar_credentials
+      @google_calendar_credentials ||= json_credentials['google_calendar']
+    end
+
+    private
+
+    def json_credentials
+      @json_credentials ||= JSON.parse File.read(@credentials_path)
+    end
   end
 end

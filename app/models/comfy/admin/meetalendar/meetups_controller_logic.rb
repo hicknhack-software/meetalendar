@@ -20,7 +20,7 @@ module Comfy::Admin::Meetalendar::MeetupsControllerLogic
   end
 
   def self.authorize_meetup(request, callback_path)
-    meetup_credentials = ::MEETALENDAR_CREDENTIALS_MEETUP
+    meetup_credentials = Meetalendar.config.meetup_credentials
 
     redirect_url = "https://secure.meetup.com/oauth2/authorize" +
       "?client_id=#{meetup_credentials["client_id"]}" +
@@ -29,10 +29,16 @@ module Comfy::Admin::Meetalendar::MeetupsControllerLogic
   end
 
   def self.callback(code, request, callback_path)
-    meetup_credentials = ::MEETALENDAR_CREDENTIALS_MEETUP
+    meetup_credentials = Meetalendar.config.meetup_credentials
 
     request_uri = "https://secure.meetup.com/oauth2/access"
-    request_query_hash = {"client_id": meetup_credentials["client_id"], "client_secret": meetup_credentials["client_secret"], "grant_type": "authorization_code", "redirect_uri": "#{request.protocol}#{request.host_with_port}#{callback_path.to_s}", "code": "#{code}"}
+    request_query_hash = {
+        "client_id": meetup_credentials["client_id"],
+        "client_secret": meetup_credentials["client_secret"],
+        "grant_type": "authorization_code",
+        "redirect_uri": "#{request.protocol}#{request.host_with_port}#{callback_path.to_s}",
+        "code": code,
+    }
 
     client = HTTPClient.new
     begin

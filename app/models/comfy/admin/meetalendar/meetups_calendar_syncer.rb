@@ -14,7 +14,7 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
   GOOGLE_CALENDAR_AUTH_SCOPE ||= Google::Apis::CalendarV3::AUTH_CALENDAR_EVENTS.freeze
 
   def self.prepare_authorizer
-    client_id = ::MEETALENDAR_CREDENTIALS_GOOGLE_CALENDAR_CLIENT_ID
+    client_id = Google::Auth::ClientId.from_hash Meetalendar.config.google_calendar_credentials
     token_store = Google::Auth::Stores::DbTokenStore.new
     authorizer = Google::Auth::UserAuthorizer.new client_id, GOOGLE_CALENDAR_AUTH_SCOPE, token_store
   end
@@ -60,13 +60,18 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
       # try
       current_tokens = JSON.parse(loaded_token)
       request_uri = "https://api.meetup.com" + path.to_s
-      request_query_args = args.merge({"access_token" => (current_tokens["access_token"])})
+      request_query_args = args.merge('access_token': current_tokens["access_token"])
       result = client.request("GET", request_uri, request_query_args)
 
       if result.nil? || result.status == Rack::Utils::SYMBOL_TO_STATUS_CODE[:unauthorized]
-        meetup_credentials = ::MEETALENDAR_CREDENTIALS_MEETUP
+        meetup_credentials = Meetalendar.config.meetup_credentials
         request_uri = "https://secure.meetup.com/oauth2/access"
-        request_query_args = {"client_id": meetup_credentials["client_id"], "client_secret": meetup_credentials["client_secret"], "grant_type": "refresh_token", "refresh_token": "#{current_tokens["refresh_token"]}"}
+        request_query_args = {
+            'client_id': meetup_credentials["client_id"],
+            'client_secret': meetup_credentials["client_secret"],
+            'grant_type': "refresh_token",
+            'refresh_token': current_tokens["refresh_token"]
+        }
         post_return = client.post_content(request_uri, request_query_args)
 
         if post_return.nil? || post_return.status == Rack::Utils::SYMBOL_TO_STATUS_CODE[:unauthorized]
@@ -74,12 +79,19 @@ module Comfy::Admin::Meetalendar::MeetupsCalendarSyncer
           raise ::ActiveResource::UnauthorizedAccess, "To access this path you need to have authenticated the Meetup API successfully."
         else
           response = JSON.parse(post_return.to_s)
-          token_store.store("meetup", {"auth_id": "meetup", "client_id": meetup_credentials["client_id"], "access_token": response["access_token"], "refresh_token": response["refresh_token"], "scope": "", "expiration_time_millis": response["expires_in"] * 1000}.to_json.to_s)
+          token_store.store('meetup', {
+              'auth_id': 'meetup',
+              'client_id': meetup_credentials['client_id'],
+              'access_token': response['access_token'],
+              'refresh_token': response['refresh_token'],
+              'scope': '',
+              'expiration_time_millis': response['expires_in'] * 1000
+          }.to_json.to_s)
 
           # retry with refreshed token
           current_tokens = JSON.parse(loaded_token)
           request_uri = "https://api.meetup.com" + path.to_s
-          request_query_args = args.merge({"access_token" => (current_tokens["access_token"])})
+          request_query_args = args.merge('access_token': current_tokens["access_token"])
           result = client.request("GET", request_uri, request_query_args)
   
           if result.nil? || result.status != Rack::Utils::SYMBOL_TO_STATUS_CODE[:ok]
