@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'active_resource'
-
+require 'httpclient'
 require 'multi_json'
+
 require_relative "../../../google/auth/store/db_token_store"
 
 module Comfy::Admin::Meetalendar::MeetupsControllerLogic
