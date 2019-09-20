@@ -44,7 +44,7 @@ ul.list
                       .event
                         .name = link_to event["name"], event["link"]
                         .time
-                          span.city => "In ${event.dig("venue", "city")}, Von"
+                          span.city => "In #{event.dig("venue", "city")}, Von"
                           span.start => l(Time.at(event["time"].to_i.div(1000)), format: :long)
                           span.to bis
                           span.end =< l(Time.at((event["time"].to_i + event["duration"].to_i).div(1000)), format: :short)
