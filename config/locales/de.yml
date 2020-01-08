@@ -1,0 +1,22 @@
+de:
+  comfy:
+    admin:
+      cms:
+        meetups:
+          nav-link: "Meetups"
+  meetalendar:
+    admin:
+      group_search:
+        no_events_planned: "Keine Events geplant"
+        view_on_meetup: "Zu Meetup"
+        select_groups: "Neue Meetup Gruppen auswählen"
+        event_at: "Am %{start_time}"
+        rsvp_count: "%{count} Teilnehmer"
+        next_events:
+          zero: "Keine Events geplant"
+          one: "Nächstes Event"
+          other: "Nächste %{count} Events"
+        last_event: "Letztes Event"
+        event_in_at: "In %{city}, Am %{start_time}"
+    group:
+      approved_cities: "Automatik-Städte"

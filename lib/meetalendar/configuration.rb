@@ -8,7 +8,7 @@ module Meetalendar
 
     # Configuration defaults
     def initialize
-      @credentials_path = ENV['MEETALENDAR_CREDENTIALS_FILEPATH'] || Rails.root.join('config', 'meetalender_credentials.json')
+      @credentials_path = ENV['MEETALENDAR_CREDENTIALS_FILEPATH'] || Rails.root.join('config', 'meetalendar_credentials.json')
       @meetup_credentials = nil
       @google_calendar_credentials = nil
     end

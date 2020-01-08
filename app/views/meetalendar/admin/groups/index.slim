@@ -1,0 +1,23 @@
+.page-header
+  = link_to 'Add Groups', :meetalendar_admin_meetup_api_search, class: 'btn btn-primary float-right ml-1'
+  = link_to 'Authorize Calendar', :new_meetalendar_admin_gcal_api_auth, class: 'btn btn-secondary float-right ml-1'
+  = link_to 'Authorize Meetup', :new_meetalendar_admin_meetup_api_oauth, class: 'btn btn-secondary float-right'
+  h2 = 'Subscribed Meetup Groups'
+
+= paginate @groups, theme: 'comfy'
+
+ul.list
+  - @groups&.each do |group|
+    li
+      .row
+        .col-md-8.item
+          .item-content
+            .item-title = link_to group.name, group.meetup_link, target: "_blank"
+            .item_meta = "Approved Cities: #{group.approved_cities.blank? ? 'All' : group.approved_cities}, Id: #{group.meetup_id}"
+
+        .col-md-4.d-flex.align-items-center.justify-content-md-end
+          .btn-group.btn-group-sm
+            = link_to 'Edit', edit_meetalendar_admin_group_path(group), class: 'btn btn-outline-secondary'
+            = link_to 'Delete', meetalendar_admin_group_path(group), method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger'
+
+= paginate @groups, theme: 'comfy'

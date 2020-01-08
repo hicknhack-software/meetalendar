@@ -30,4 +30,24 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  comfy:
+    admin:
+      cms:
+        meetups:
+          nav-link: "Meetups"
+  meetalendar:
+    admin:
+      group_search:
+        no_events_planned: "No Events planned"
+        view_on_meetup: "View on Meetup"
+        select_groups: "Select new Meetup Groups"
+        event_at: "At %{start_time}"
+        rsvp_count: "%{yes_rsvp_count} attendees"
+        next_events:
+          zero: "No Events planned"
+          one: "Next Event"
+          other: "Next %{count} Events"
+        last_event: "Last Event"
+        event_in_at: "In %{city}, At %{start_time}"
+    group:
+      approved_cities: "Approved Cities"

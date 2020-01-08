@@ -1,0 +1,9 @@
+.page-header
+  h2 Meetup Group "#{@group.name}"
+
+= comfy_form_with model: @group, url: :meetalendar_admin_group, scope: :group do |form|
+  = form.text_field :approved_cities, placeholder: "All"
+
+  = form.form_actions do
+    = submit_tag "Save Edited", class: "btn btn-primary"
+    = link_to t('.cancel'), meetalendar_admin_groups_path, class: "btn btn-link"

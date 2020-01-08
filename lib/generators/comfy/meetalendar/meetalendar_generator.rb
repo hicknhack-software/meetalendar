@@ -16,14 +16,14 @@ module Comfy
       end
 
       def generate_migration
-        destination   = File.expand_path("db/migrate/01_create_meetalendar_meetup_groups.rb", destination_root)
+        destination   = File.expand_path("db/migrate/01_create_meetalendar_groups.rb", destination_root)
         migration_dir = File.dirname(destination)
-        destination   = self.class.migration_exists?(migration_dir, "create_meetalendar_meetup_groups")
+        destination   = self.class.migration_exists?(migration_dir, "create_meetalendar_groups")
 
         if destination
-          puts "\e[0m\e[31mFound existing create_meetalendar_meetup_groups migration. Remove it if you want to regenerate.\e[0m"
+          puts "\e[0m\e[31mFound existing create_meetalendar_groups migration. Remove it if you want to regenerate.\e[0m"
         else
-          migration_template "db/migrate/01_create_meetalendar_meetup_groups.rb", "db/migrate/create_meetalendar_meetup_groups.rb"
+          migration_template "db/migrate/01_create_meetalendar_meetup_groups.rb", "db/migrate/create_meetalendar_groups.rb"
         end
 
         destination   = File.expand_path("db/migrate/02_create_meetalendar_auth_credentials.rb", destination_root)

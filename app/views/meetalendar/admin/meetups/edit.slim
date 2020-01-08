@@ -1,5 +1,0 @@
-.page-header
-  h2 Meetup Group "#{@meetup.name}"
-
-= comfy_form_with model: @meetup, url: meetalendar_admin_meetup_path(@meetup), scope: :meetup do |form|
-  = render 'edit', form: form

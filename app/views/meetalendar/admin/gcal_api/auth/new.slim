@@ -1,0 +1,12 @@
+.page-header
+  h2 Authorize Calendar Access
+
+p The following link sends you to google in a new tab. Please grant this application access to your calendar. You will receive a key code that you have to enter below.
+p.goto_url = link_to "Google Calendar Authorization.", @gcal_auth_url, target: "_blank"
+
+= comfy_form_with url: :meetalendar_admin_gcal_api_auth, method: :put do |form|
+  = form.text_field :key_code, value: ''
+
+  = form.form_actions do
+    = submit_tag "Save Key", class: "btn btn-primary"
+    = link_to 'Cancel', :meetalendar_admin_groups, class: "btn btn-link"

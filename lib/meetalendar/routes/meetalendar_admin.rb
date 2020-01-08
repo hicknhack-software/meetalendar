@@ -5,16 +5,16 @@ class ActionDispatch::Routing::Mapper
   def comfy_route_meetalendar_admin(options = {})
     scope module: 'meetalendar', as: 'meetalendar' do
       namespace :admin, path: (options[:path] || "admin") do
-        resources :meetups, except: [:show] do
-          collection do
-            get 'search_mask'
-            get 'search_result'
-            get  'authorize_calendar'
-            post 'authorize_calendar'
-            get 'authorize_meetup'
+        resources :groups, except: [:show, :new]
+        namespace :meetup_api do
+          resource :search, controller: 'search', only: [:show, :new]
+          resource :oauth, controller: 'oauth', only: [:new] do
             get 'callback'
             get 'failure'
           end
+        end
+        namespace :gcal_api do
+          resource :auth, controller: 'auth', only: [:new, :update]
         end
       end
     end
