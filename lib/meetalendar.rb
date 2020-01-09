@@ -24,6 +24,13 @@ module Meetalendar
     end
     alias config configuration
 
+    def sync_calendar(gcal_id = nil)
+      gcal_id ||= Meetalendar.config.google_calendar_id
+      time_now = Time.now
+      time_limit = time_now + 1.year
+      upcoming_events = Meetalendar::Group.all_upcoming_events time_now
+      Meetalendar::GcalSync.update_events upcoming_events, gcal_id, time_now, time_limit
+    end
   end
 
 end

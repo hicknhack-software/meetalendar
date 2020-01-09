@@ -5,12 +5,14 @@ module Meetalendar
     attr_accessor :credentials_path
     attr_accessor :meetup_credentials
     attr_accessor :google_calendar_credentials
+    attr_accessor :google_calendar_id
 
     # Configuration defaults
     def initialize
       @credentials_path = ENV['MEETALENDAR_CREDENTIALS_FILEPATH'] || Rails.root.join('config', 'meetalendar_credentials.json')
       @meetup_credentials = nil
       @google_calendar_credentials = nil
+      @google_calendar_id = nil
     end
 
     def meetup_credentials
