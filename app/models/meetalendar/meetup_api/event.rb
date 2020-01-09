@@ -8,7 +8,7 @@ module Meetalendar
       end
 
       def id
-        json['id'].to_i
+        json['id'].to_s
       end
 
       def group_id
@@ -52,7 +52,7 @@ module Meetalendar
       end
 
       def gcal_id
-        Digest::MD5.hexdigest(id.to_s)
+        Digest::MD5.hexdigest(id)
       end
 
       def gcal_location

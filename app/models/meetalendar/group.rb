@@ -9,7 +9,7 @@ class Meetalendar::Group < ApplicationRecord
 
   def self.all_upcoming_events(time_now = nil)
     time_now ||= Time.now
-    groups = Group.all
+    groups = self.all
     group_ids = groups.map &:meetup_id
     group_approved_cities = groups.map do |group|
       ["#{group.meetup_id}", group.approved_cities]
