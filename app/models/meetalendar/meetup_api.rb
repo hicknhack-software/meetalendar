@@ -1,54 +1,26 @@
 require 'httpclient'
 require 'multi_json'
-require 'active_resource'
 
 module Meetalendar
   module MeetupApi
 
-    def self.get(path, args = {})
-      client = HTTPClient.new
-      tokens = self.tokens
-
-      request_uri = "https://api.meetup.com" + path.to_s
-      request_query_args = args.merge('access_token': tokens.access_token)
-      result = client.request("GET", request_uri, request_query_args)
-      return JSON.parse(result.body || '{}') if result&.status == Rack::Utils::status_code(:ok)
-
-      if result&.status == Rack::Utils::status_code(:unauthorized)
-        tokens = Oauth.refresh
-
-        # retry with refreshed token
-        request_query_args = args.merge('access_token': tokens.access_token)
-        result = client.request("GET", request_uri, request_query_args)
-        return JSON.parse(result.body || '{}') if result&.status == Rack::Utils::status_code(:ok)
-
-        # still no success
-        Rails.logger.error "Authorization with current token failed, token was refreshed but authorization still fails. Was authorization to meetup api revoked?"
-        raise ::ActiveResource::UnauthorizedAccess, "To access this path you need to have authenticated the Meetup API successfully."
-      end
-    end
-
     def self.find_groups(args = {})
-      groups_json = self.get "/find/groups", args
-
-      (groups_json || []).map do |group_json|
-        Group.new(group_json)
+      (get("/find/groups", args) || []).map do |group_json|
+        Group.new group_json
       end
     end
 
     def self.find_upcoming_events(args = {})
-      events_json = self.get "/find/upcoming_events", args
-
-      (events_json&.dig('events') || []).map do |event_json|
-        Event.new(event_json)
+      (get("/find/upcoming_events", args)&.dig('events') || []).map do |event_json|
+        Event.new event_json
       end
     end
 
     def self.search_groups(request_params, time_now = nil)
       time_now ||= Time.now
 
-      groups = self.find_groups(request_params.merge({'fields': 'last_event'}))
-      upcoming_events = self.find_upcoming_events({"page": 200})
+      groups = find_groups(request_params.merge({'fields': 'last_event'}))
+      upcoming_events = find_upcoming_events({"page": 200})
 
       group_ids = groups.map(&:id)
       filtered_events = upcoming_events.select do |e|
@@ -65,11 +37,18 @@ module Meetalendar
 
     private
 
-    def self.tokens
-      Oauth.tokens || begin
-        Rails.logger.error "Authorization failed as no currently authorized meetup api token was present."
-        raise ::ActiveResource::UnauthorizedAccess, "To access this path you need to have authenticated the Meetup API successfully."
+    def self.get(path, args = {})
+      client = HTTPClient.new
+      result = client.get(api_uri(path), query: args.merge('access_token': Oauth.tokens.access_token))
+      if result&.status == Rack::Utils::status_code(:unauthorized)
+        result = client.get(api_uri(path), query: args.merge('access_token': Oauth.refresh.access_token))
       end
+      JSON.parse(result.success_content || '{}')
     end
+
+    def self.api_uri(path)
+      "https://api.meetup.com#{path}"
+    end
+
   end
 end

@@ -11,22 +11,14 @@ module Meetalendar
         end
 
         def update
-          key_code = params_permit_key_code[:key_code]
-          Meetalendar::GcalApi::Auth.authorize_and_remember(key_code)
+          Meetalendar::GcalApi::Auth.authorize_and_remember params[:key_code]
           flash[:success] = "Calendar successfully authorized."
-          redirect_to meetalendar_admin_group_path
-        rescue ::ActiveResource::UnauthorizedAccess => exception
-          flash[:error] = exception.message.to_s
-          redirect_to action: :new
-        rescue => ex
-          Rails.logger.error "failed to authorize calendar: #{ex.message}"
-          redirect_to action: :new
-        end
-
-        private
-
-        def params_permit_key_code
-          params.permit(:key_code)
+          redirect_to meetalendar_admin_groups_path
+        rescue Meetalendar::GcalApi::Auth::Error => e
+          Rails.logger.warn [e.message, *e.backtrace].join($/)
+          flash[:error] = "Failed authorization: #{e.message}"
+        ensure
+          redirect_to action: :new unless performed?
         end
 
       end
