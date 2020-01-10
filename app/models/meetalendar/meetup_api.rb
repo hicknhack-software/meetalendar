@@ -6,13 +6,13 @@ module Meetalendar
 
     def self.find_groups(args = {})
       (get("/find/groups", args) || []).map do |group_json|
-        Group.new group_json
+        Meetalendar::MeetupApi::Group.new group_json
       end
     end
 
     def self.find_upcoming_events(args = {})
       (get("/find/upcoming_events", args)&.dig('events') || []).map do |event_json|
-        Event.new event_json
+        Meetalendar::MeetupApi::Event.new event_json
       end
     end
 
