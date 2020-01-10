@@ -7,10 +7,11 @@ module Meetalendar
       class SearchController < Comfy::Admin::Cms::BaseController
 
         def show
+          @parameters = parameters
         end
 
         def new
-          @groups = Meetalendar::MeetupApi.search_groups JSON.parse(search_params[:parameters])
+          @groups = Meetalendar::MeetupApi.search_groups parameters
         rescue HTTPClient::BadResponseError => e
           raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
           Rails.logger.warn [e.message, *e.backtrace].join($/)
@@ -20,8 +21,12 @@ module Meetalendar
 
         private
 
-        def search_params
-          params.permit(:parameters)
+        def parameters
+          if params[:parameters].present?
+            JSON.parse(params[:parameters])
+          else
+            {country: 'DE', state: 'Sachsen', location: 'Dresden', category: '34', page: 200}
+          end
         end
 
       end
