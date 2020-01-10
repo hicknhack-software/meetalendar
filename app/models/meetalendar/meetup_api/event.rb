@@ -13,7 +13,11 @@ module Meetalendar
       end
 
       def group_id
-        json&.dig('group', 'id')&.to_i
+        json.dig('group', 'id')&.to_i
+      end
+
+      def group_name
+        json.dig('group', 'name')&.to_s
       end
 
       def name
@@ -60,6 +64,14 @@ module Meetalendar
         "meetalendar#{Digest::MD5.hexdigest(id)}"
       end
 
+      def gcal_summary
+        if group_name.downcase.split.any? { |w| w.length > 4 and name.downcase.include? w }
+          name
+        else
+          "#{name} [#{group_name}]"
+        end
+      end
+
       def gcal_location
         if venue?
           name_address = if json['venue']['name'] != json['venue']['address_1']
@@ -68,15 +80,13 @@ module Meetalendar
                            "#{json['venue']['address_1']}"
                          end
           "#{name_address}, #{json['venue']['city']}, #{json['venue']['localized_country_name']}"
-        elsif link?
-          link
         else
           ""
         end
       end
 
       def gcal_description
-        "#{description}#{"\nLink: #{link}" if link?}"
+        "#{description.gsub(/<p>/, '<div>').gsub!(/<\/p>/, '</div>')}#{"<div>Link: #{link}</div>" if link?}"
       end
 
       def gcal_start
@@ -105,7 +115,7 @@ module Meetalendar
         # see https://developers.google.com/calendar/v3/reference/events
         Google::Apis::CalendarV3::Event.new(
             id: gcal_id,
-            summary: name,
+            summary: gcal_summary,
             location: gcal_location,
             description: gcal_description,
             start: gcal_start,
