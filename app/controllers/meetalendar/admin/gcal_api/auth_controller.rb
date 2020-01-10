@@ -16,7 +16,7 @@ module Meetalendar
           redirect_to meetalendar_admin_groups_path
         rescue Meetalendar::GcalApi::Auth::Error => e
           Rails.logger.warn [e.message, *e.backtrace].join($/)
-          flash[:error] = "Failed authorization: #{e.message}"
+          flash[:danger] = "Failed authorization: #{e.message}"
         ensure
           redirect_to action: :new unless performed?
         end
