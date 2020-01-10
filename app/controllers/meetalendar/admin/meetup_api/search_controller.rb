@@ -11,13 +11,11 @@ module Meetalendar
 
         def new
           @groups = Meetalendar::MeetupApi.search_groups JSON.parse(search_params[:parameters])
-        rescue ::HTTPClient::BadResponseError => bad
-          if bad.res.status == HTTP::Status::UNAUTHORIZED
-            flash[:error] = "Could not load groups and events from meetup. Is the client authorized to the Meetup API?"
-            redirect_to action: :show
-          else
-            raise
-          end
+        rescue HTTPClient::BadResponseError => e
+          raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
+          Rails.logger.warn [e.message, *e.backtrace].join($/)
+          flash[:danger] = "Could not load groups and events from meetup. Is the client authorized to the Meetup API?"
+          redirect_to action: :show
         end
 
         private

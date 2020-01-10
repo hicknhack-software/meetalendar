@@ -38,12 +38,14 @@ module Meetalendar
     private
 
     def self.get(path, args = {})
-      client = HTTPClient.new
-      result = client.get(api_uri(path), query: args.merge('access_token': Oauth.tokens.access_token))
-      if result&.status == Rack::Utils::status_code(:unauthorized)
-        result = client.get(api_uri(path), query: args.merge('access_token': Oauth.refresh.access_token))
-      end
-      JSON.parse(result.success_content || '{}')
+      get_with_auth path, args, Oauth.tokens
+    rescue HTTPClient::BadResponseError => e
+      raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
+      get_with_auth path, args, Oauth.refresh # retry with refreshed tokens
+    end
+
+    def self.get_with_auth(path, args, auth)
+      JSON.parse HTTPClient.get_content api_uri(path), query: args.merge('access_token': auth.access_token)
     end
 
     def self.api_uri(path)

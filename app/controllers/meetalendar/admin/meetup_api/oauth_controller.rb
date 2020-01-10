@@ -13,12 +13,10 @@ module Meetalendar
         def callback
           Meetalendar::MeetupApi::Oauth.create_auth(params[:code], callback_meetalendar_admin_meetup_api_oauth_url)
           flash[:success] = "Meetup.com API successfully authorized."
-        rescue ::HTTPClient::BadResponseError => bad
-          if bad.res.status == HTTP::Status::UNAUTHORIZED
-            flash[:error] = bad.message.to_s
-          else
-            raise
-          end
+        rescue HTTPClient::BadResponseError => e
+          raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
+          Rails.logger.warn [e.message, *e.backtrace].join($/)
+          flash[:danger] = e.message.to_s
         ensure
           redirect_to meetalendar_admin_groups_path unless performed?
         end
