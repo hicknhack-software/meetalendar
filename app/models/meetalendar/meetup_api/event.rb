@@ -3,6 +3,7 @@ module Meetalendar
     class Event
       attr_reader :json
 
+      # see https://www.meetup.com/de-DE/meetup_api/docs/:urlname/events/:id/
       def initialize(json)
         @json = json
       end
@@ -101,6 +102,7 @@ module Meetalendar
       end
 
       def gcal_event
+        # see https://developers.google.com/calendar/v3/reference/events
         Google::Apis::CalendarV3::Event.new(
             id: gcal_id,
             summary: name,

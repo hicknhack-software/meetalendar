@@ -5,12 +5,14 @@ module Meetalendar
   module MeetupApi
 
     def self.find_groups(args = {})
+      # see https://www.meetup.com/de-DE/meetup_api/docs/find/groups
       (get("/find/groups", args) || []).map do |group_json|
         Meetalendar::MeetupApi::Group.new group_json
       end
     end
 
     def self.find_upcoming_events(args = {})
+      # see https://www.meetup.com/de-DE/meetup_api/docs/find/upcoming_events
       (get("/find/upcoming_events", args)&.dig('events') || []).map do |event_json|
         Meetalendar::MeetupApi::Event.new event_json
       end
