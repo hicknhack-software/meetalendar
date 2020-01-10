@@ -51,8 +51,12 @@ module Meetalendar
         Time.at(Rational(json['time'].to_i + json['duration'].to_i) / 1000, Rational(json['utc_offset'].to_i) / (24 * 60 * 601000))
       end
 
+      def self.gcal_id?(id)
+        id.start_with?('meetalendar')
+      end
+
       def gcal_id
-        Digest::MD5.hexdigest(id)
+        "meetalendar#{Digest::MD5.hexdigest(id)}"
       end
 
       def gcal_location
@@ -88,6 +92,14 @@ module Meetalendar
         }
       end
 
+      GCAL_SOURCE_TITLE = 'Meetalendar'
+      def gcal_source
+        {
+            title: GCAL_SOURCE_TITLE,
+            url: link
+        }
+      end
+
       def gcal_event
         Google::Apis::CalendarV3::Event.new(
             id: gcal_id,
@@ -95,7 +107,8 @@ module Meetalendar
             location: gcal_location,
             description: gcal_description,
             start: gcal_start,
-            end: gcal_end
+            end: gcal_end,
+            source: gcal_source
         )
       end
     end

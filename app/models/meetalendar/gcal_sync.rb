@@ -11,7 +11,10 @@ module Meetalendar
 
       meetup_ids = meetup_events.map(&:gcal_id)
       gcal_events.each do |gcal_event|
-        self.calendar_service.delete_event(calendar_id, gcal_event.id) if gcal_event.status != 'cancelled' and not meetup_ids.include?(gcal_event.id)
+        is_active = gcal_event.status != 'cancelled'
+        from_us = Meetalendar::MeetupApi::Event.gcal_id? gcal_event.id
+        in_meetup = meetup_ids.include? gcal_event.id
+        self.calendar_service.delete_event(calendar_id, gcal_event.id) if is_active and from_us and not in_meetup
       end
 
       gcal_ids = gcal_events.map(&:id)
