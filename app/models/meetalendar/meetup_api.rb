@@ -19,8 +19,8 @@ module Meetalendar
     def self.search_groups(request_params, time_now = nil)
       time_now ||= Time.now
 
-      groups = find_groups(request_params.merge({'fields': 'last_event'}))
-      upcoming_events = find_upcoming_events({"page": 200})
+      groups = find_groups(request_params.merge('fields': 'last_event'))
+      upcoming_events = find_upcoming_events('page': 200)
 
       group_ids = groups.map(&:id)
       filtered_events = upcoming_events.select do |e|

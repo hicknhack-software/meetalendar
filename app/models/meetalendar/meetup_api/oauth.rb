@@ -18,8 +18,8 @@ module Meetalendar
 
       def self.create_auth(code, callback_uri)
         auth = JSON.parse HTTPClient.post_content ACCESS_URI, body: {
-            'client_id': self.config["client_id"],
-            'client_secret': self.config["client_secret"],
+            'client_id': client_id,
+            'client_secret': client_secret,
             'grant_type': 'authorization_code',
             "redirect_uri": callback_uri,
             'code': code,
@@ -29,10 +29,10 @@ module Meetalendar
 
       def self.refresh
         auth = JSON.parse HTTPClient.post_content ACCESS_URI, body: {
-            'client_id': self.config["client_id"],
-            'client_secret': self.config["client_secret"],
+            'client_id': client_id,
+            'client_secret': client_secret,
             'grant_type': "refresh_token",
-            'refresh_token': self.tokens.refresh_token
+            'refresh_token': tokens.refresh_token
         }
         store auth
       end
@@ -43,14 +43,23 @@ module Meetalendar
         Meetalendar.config.meetup_credentials
       end
 
+      def self.client_id
+        config['client_id']
+      end
+
+      def self.client_secret
+        config['client_secret']
+      end
+
       def self.store(auth)
         AuthCredential.store_auth('meetup', {
-            'client_id': self.config["client_id"],
-            'access_token': auth["access_token"],
-            'refresh_token': auth["refresh_token"],
+            'client_id': client_id,
+            'access_token': auth['access_token'],
+            'refresh_token': auth['refresh_token'],
             'scope': '',
-            'expiration_time_millis': auth["expires_in"] * 1000
+            'expiration_time_millis': auth['expires_in'] * 1000
         })
+        auth
       end
 
     end

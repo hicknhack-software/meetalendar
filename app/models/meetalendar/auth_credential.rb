@@ -7,9 +7,7 @@ class Meetalendar::AuthCredential < ApplicationRecord
   attr_encrypted :refresh_token, key: Rails.application.key_generator.generate_key('refresh_token', 32)
 
   def scope
-    # NOTE(Schau): Scope expected to be a json parsable string that results in an array.
-    parsed_scope = JSON.parse(self.scope_json)
-    parsed_scope.empty? ? [] : parsed_scope
+    JSON.parse(self.scope_json) || []
   end
   def scope=(new_scope)
     self.scope_json = new_scope.to_json.to_s
@@ -20,7 +18,7 @@ class Meetalendar::AuthCredential < ApplicationRecord
   end
 
   def self.store_auth(id, attributes)
-    self.find_or_initialize_by(auth_id: id).update(attributes)
+    self.find_or_initialize_by(auth_id: id).update! attributes
   end
 
   def as_token
