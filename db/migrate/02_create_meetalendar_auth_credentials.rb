@@ -7,7 +7,7 @@ class CreateMeetalendarAuthCredentials < ActiveRecord::Migration[5.2]
       t.string :encrypted_refresh_token
       t.string :encrypted_refresh_token_iv
       t.string :scope_json
-      t.integer :expiration_time_millis
+      t.bigint :expiration_time_millis
       t.string :auth_id
 
       t.timestamps
