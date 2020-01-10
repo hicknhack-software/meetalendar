@@ -25,7 +25,7 @@ module Meetalendar
           if params[:parameters].present?
             JSON.parse(params[:parameters])
           else
-            {country: 'DE', state: 'Sachsen', location: 'Dresden', category: '34', page: 200}
+            {upcoming_events: true, lat: 51.0769658, lon: 13.6325046, radius: 30, category: '34', page: 200, order: 'distance'}
           end
         end
 
