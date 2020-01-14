@@ -114,14 +114,26 @@ module Meetalendar
       def gcal_event
         # see https://developers.google.com/calendar/v3/reference/events
         Google::Apis::CalendarV3::Event.new(
-            id: gcal_id,
-            summary: gcal_summary,
-            location: gcal_location,
-            description: gcal_description,
-            start: gcal_start,
-            end: gcal_end,
-            source: gcal_source
-        )
+          id: gcal_id,
+          summary: gcal_summary,
+          location: gcal_location,
+          description: gcal_description,
+          start: Google::Apis::CalendarV3::EventDateTime.new(date_time: gcal_start[:date_time], time_zone: gcal_start[:time_zone]),
+          end: Google::Apis::CalendarV3::EventDateTime.new(date_time: gcal_end[:date_time], time_zone: gcal_end[:time_zone]),
+          source: Google::Apis::CalendarV3::Event::Source.new(title: gcal_source[:title], url: gcal_source[:url])
+      )
+      end
+
+      def equal_with_gcal_event?(gcal_event)
+        gcal_event.description == self.gcal_event.description &&
+        gcal_event.end.date_time.to_s == self.gcal_event.end.date_time.to_s &&
+        gcal_event.end.time_zone == self.gcal_event.end.time_zone &&
+        gcal_event.location == self.gcal_event.location &&
+        gcal_event.source.title == self.gcal_event.source.title &&
+        gcal_event.source.url == self.gcal_event.source.url &&
+        gcal_event.start.date_time.to_s == self.gcal_event.start.date_time.to_s &&
+        gcal_event.start.time_zone == self.gcal_event.start.time_zone &&
+        gcal_event.summary == self.gcal_event.summary
       end
     end
   end

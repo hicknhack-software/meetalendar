@@ -20,7 +20,10 @@ module Meetalendar
       gcal_ids = gcal_events.map(&:id)
       meetup_events.each do |event|
         if gcal_ids.include? event.gcal_id
-          self.calendar_service.update_event(calendar_id, event.gcal_id, event.gcal_event)
+          found_gcal_event = gcal_events.find {|e| e.id == event.gcal_id}
+          if !event.equal_with_gcal_event? found_gcal_event
+            self.calendar_service.update_event(calendar_id, event.gcal_id, event.gcal_event)
+          end
         else
           self.calendar_service.insert_event(calendar_id, event.gcal_event)
         end
