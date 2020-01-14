@@ -4,7 +4,7 @@
     i.fas.fa-fw> aria-hidden="true" class=[(Meetalendar::GcalApi::Auth.authorize.nil? rescue true) ? 'fa-exclamation-circle' : 'fa-check-square']
     | Authorize Calendar
   = link_to :new_meetalendar_admin_meetup_api_oauth, class: 'btn btn-secondary float-right'
-    i.fas.fa-fw> aria-hidden="true" class=[Meetalendar::MeetupApi::Oauth.tokens.nil? ? 'fa-exclamation-circle' : 'fa-check-square']
+    i.fas.fa-fw> aria-hidden="true" class=[(Meetalendar::MeetupApi::Oauth.tokens.nil? rescue true) ? 'fa-exclamation-circle' : 'fa-check-square']
     | Authorize Meetup
   h2 = 'Subscribed Meetup Groups'
 
