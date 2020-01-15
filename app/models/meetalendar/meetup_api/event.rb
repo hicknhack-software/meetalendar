@@ -90,25 +90,25 @@ module Meetalendar
       end
 
       def gcal_start
-        {
+        Google::Apis::CalendarV3::EventDateTime.new(
             date_time: DateTime.parse(start_time.to_s).to_s,
             time_zone: Time.zone.name
-        }
+        )
       end
 
       def gcal_end
-        {
+        Google::Apis::CalendarV3::EventDateTime.new(
             date_time: DateTime.parse(end_time.to_s).to_s,
             time_zone: Time.zone.name
-        }
+        )
       end
 
       GCAL_SOURCE_TITLE = 'Meetalendar'
       def gcal_source
-        {
+        Google::Apis::CalendarV3::Event::Source.new(
             title: GCAL_SOURCE_TITLE,
             url: link
-        }
+        )
       end
 
       def gcal_event
@@ -118,9 +118,9 @@ module Meetalendar
           summary: gcal_summary,
           location: gcal_location,
           description: gcal_description,
-          start: Google::Apis::CalendarV3::EventDateTime.new(date_time: gcal_start[:date_time], time_zone: gcal_start[:time_zone]),
-          end: Google::Apis::CalendarV3::EventDateTime.new(date_time: gcal_end[:date_time], time_zone: gcal_end[:time_zone]),
-          source: Google::Apis::CalendarV3::Event::Source.new(title: gcal_source[:title], url: gcal_source[:url])
+          start: gcal_start,
+          end: gcal_end,
+          source: gcal_source
       )
       end
 
