@@ -18,6 +18,12 @@ module Meetalendar
       end
     end
 
+    def self.group_urlname_events(group_urlname, args = {})
+      (get("/#{group_urlname}/events", args) || []).map do |event_json|
+        Meetalendar::MeetupApi::Event.new event_json
+      end
+    end
+
     def self.search_groups(request_params, time_now = nil)
       time_now ||= Time.now
 

@@ -20,6 +20,10 @@ module Meetalendar
         json.dig('group', 'name')&.to_s
       end
 
+      def group_urlname
+        json.dig('group', 'urlname')&.to_s
+      end
+
       def name
         json['name'].to_s
       end
@@ -58,6 +62,11 @@ module Meetalendar
 
       def self.gcal_id?(id)
         id.start_with?('meetalendar')
+      end
+
+      # NOTE: this field will always be empty if the 'series' keyword was not part of the request in the 'fields' field
+      def is_series?
+        not json['series'].nil?
       end
 
       def gcal_id
