@@ -70,9 +70,8 @@ module Meetalendar
         id.start_with?('meetalendar')
       end
 
-      # NOTE: this field will always be empty if the 'series' keyword was not part of the request in the 'fields' field
-      def is_series?
-        not json['series'].nil?
+      def series?
+        json.key? 'series'
       end
 
       def gcal_id

@@ -15,19 +15,15 @@ class Meetalendar::Group < ApplicationRecord
       ["#{group.meetup_id}", group.approved_cities]
     end.to_h
 
-    upcoming_groups_events = Meetalendar::MeetupApi.find_upcoming_events({'page': 200, 'fields': 'series'}).select do |event|
+    upcoming_events = Meetalendar::MeetupApi.find_upcoming_events({'page': 200, 'fields': 'series'}).select do |event|
       event.start_time > time_now and group_ids.include?(event.group_id)
     end
 
-    upcoming_groups_series_events = upcoming_groups_events.select do |event|
-      event.is_series?
-    end.map do |event|
+    series_events = upcoming_events.select(&:series?).map do |event|
       Meetalendar::MeetupApi.group_urlname_events(event.group_urlname, {'page': 200})
     end.flatten
-    
-    concated_uniq_upcoming_events = upcoming_groups_events.concat(upcoming_groups_series_events).uniq{ |event| event.id }
-    
-    concated_uniq_upcoming_events.select do |event|
+
+    (upcoming_events + series_events).uniq(&:id).select do |event|
       approved_cities = group_approved_cities.dig(event.group_id) || []
       approved_cities.empty? or not event.venue? or approved_cities.include? event.city.downcase
     end
