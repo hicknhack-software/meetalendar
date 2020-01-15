@@ -52,12 +52,18 @@ module Meetalendar
         json['yes_rsvp_count'].to_i
       end
 
+      def utc_offset
+        json['utc_offset'].to_i / 1000
+      end
+
       def start_time
-        Time.at(Rational(json['time'].to_i) / 1000, Rational(json['utc_offset'].to_i) / (24 * 60 * 601000))
+        t = Time.at(Rational(json['time'].to_i) / 1000)
+        Time.new(t.year, t.mon, t.mday, t.hour, t.min, t.usec, utc_offset)
       end
 
       def end_time
-        Time.at(Rational(json['time'].to_i + json['duration'].to_i) / 1000, Rational(json['utc_offset'].to_i) / (24 * 60 * 601000))
+        t = Time.at(Rational(json['time'].to_i + json['duration'].to_i) / 1000)
+        Time.new(t.year, t.mon, t.mday, t.hour, t.min, t.usec, utc_offset)
       end
 
       def self.gcal_id?(id)
