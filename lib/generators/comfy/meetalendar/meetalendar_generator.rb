@@ -16,24 +16,17 @@ module Comfy
       end
 
       def generate_migration
-        destination   = File.expand_path("db/migrate/01_create_meetalendar_groups.rb", destination_root)
-        migration_dir = File.dirname(destination)
-        destination   = self.class.migration_exists?(migration_dir, "create_meetalendar_groups")
+        migration_files = Dir.children(File.expand_path("../../../../db/migrate", __dir__)).select{|file_name| !file_name.starts_with?("00")}
+        migration_files.each do |file|
+          destination   = File.expand_path("db/migrate/#{file}", destination_root)
+          migration_dir = File.dirname(destination)
+          destination   = self.class.migration_exists?(migration_dir, file.sub(/\d\d_/, ''))
 
-        if destination
-          puts "\e[0m\e[31mFound existing create_meetalendar_groups migration. Remove it if you want to regenerate.\e[0m"
-        else
-          migration_template "db/migrate/01_create_meetalendar_groups.rb", "db/migrate/create_meetalendar_groups.rb"
-        end
-
-        destination   = File.expand_path("db/migrate/02_create_meetalendar_auth_credentials.rb", destination_root)
-        migration_dir = File.dirname(destination)
-        destination   = self.class.migration_exists?(migration_dir, "create_meetalendar_auth_credentials.rb")
-
-        if destination
-          puts "\e[0m\e[31mFound existing create_meetalendar_auth_credentials migration. Remove it if you want to regenerate.\e[0m"
-        else
-          migration_template "db/migrate/02_create_meetalendar_auth_credentials.rb", "db/migrate/create_meetalendar_auth_credentials.rb"
+          if destination
+            puts "\e[0m\e[31mFound existing #{file.sub(/\d\d_/, '')} migration. Remove it if you want to regenerate.\e[0m"
+          else
+            migration_template "db/migrate/#{file}", "db/migrate/#{file.sub(/\d\d_/, '')}"
+          end
         end
       end
 

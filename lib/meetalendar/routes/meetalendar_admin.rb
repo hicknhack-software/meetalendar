@@ -5,7 +5,7 @@ class ActionDispatch::Routing::Mapper
   def comfy_route_meetalendar_admin(options = {})
     scope module: 'meetalendar' do
       namespace :admin, path: (options[:path] || "admin") do
-        resource :meetalendar, controller: 'meetalendar', only: [:show, :update] do 
+        resource :meetalendar, controller: 'meetalendar', only: [:update] do 
           resources :groups, except: [:show, :new]
           namespace :meetup_api do
             resource :search, controller: 'search', only: [:show, :new]

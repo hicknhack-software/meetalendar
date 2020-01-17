@@ -1,7 +1,7 @@
 .page-header
   h2 Search Groups on meetup.com
 
-= comfy_form_with url: :new_meetalendar_admin_meetup_api_search, method: :get do |form|
+= comfy_form_with url: :new_admin_meetalendar_meetup_api_search, method: :get do |form|
 
   p
     | See
@@ -11,4 +11,4 @@
 
   = form.form_actions do
     = submit_tag "Search for Meetup Groups", class: "btn btn-primary"
-    = link_to 'Cancel', meetalendar_admin_groups_path, class: "btn btn-link"
+    = link_to 'Cancel', admin_meetalendar_groups_path, class: "btn btn-link"

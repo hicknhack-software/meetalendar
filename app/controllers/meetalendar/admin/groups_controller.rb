@@ -2,8 +2,18 @@ module Meetalendar
   class Admin::GroupsController < Comfy::Admin::Cms::BaseController
     before_action :find_group, only: %i[show edit update destroy]
 
+    def parameters
+      parameters = Meetalendar::Frame.meetup_query
+      if parameters
+        parameters
+      else
+        {upcoming_events: true, lat: 51.0769658, lon: 13.6325046, radius: 30, category: 34, page: 200, order: 'distance'}
+      end
+    end
+
     def index
       @groups = Group.page params[:page]
+      @parameters = parameters
     end
 
     def edit

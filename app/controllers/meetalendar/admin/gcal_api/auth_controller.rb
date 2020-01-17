@@ -13,7 +13,7 @@ module Meetalendar
         def update
           Meetalendar::GcalApi::Auth.authorize_and_remember params[:key_code]
           flash[:success] = "Calendar successfully authorized."
-          redirect_to meetalendar_admin_groups_path
+          redirect_to admin_meetalendar_groups_path
         rescue Meetalendar::GcalApi::Auth::Error => e
           Rails.logger.warn [e.message, *e.backtrace].join($/)
           flash[:danger] = "Failed authorization: #{e.message}"
