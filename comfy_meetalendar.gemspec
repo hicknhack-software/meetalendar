@@ -34,9 +34,6 @@ Gem::Specification.new do |s|
   # helps encrypt and decrypt tokens from the database
   s.add_dependency 'attr_encrypted', '~> 3.1'
 
-  # helps with exceptions
-  s.add_dependency 'activeresource', '~> 5.1'
-
   # Asset processors
   s.add_dependency 'slim', '~> 4.0', '>= 4.0.1'
   s.add_dependency 'multi_json', '~> 1.13', '>= 1.13.1'

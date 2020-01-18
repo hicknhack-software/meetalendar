@@ -6,8 +6,7 @@ module Comfy
   module Generators
     class MeetalendarGenerator < Rails::Generators::Base
 
-      include Rails::Generators::Migration
-      include Thor::Actions
+      include ActiveRecord::Generators::Migration
 
       source_root File.expand_path("../../../..", __dir__)
 
@@ -16,16 +15,15 @@ module Comfy
       end
 
       def generate_migration
-        migration_files = Dir.children(File.expand_path("../../../../db/migrate", __dir__)).select{|file_name| !file_name.starts_with?("00")}
-        migration_files.each do |file|
-          destination   = File.expand_path("db/migrate/#{file}", destination_root)
-          migration_dir = File.dirname(destination)
-          destination   = self.class.migration_exists?(migration_dir, file.sub(/\d\d_/, ''))
-
-          if destination
-            puts "\e[0m\e[31mFound existing #{file.sub(/\d\d_/, '')} migration. Remove it if you want to regenerate.\e[0m"
+        migration_source_dir = File.expand_path('db/migrate', self.class.source_root)
+        migration_dest_dir = File.expand_path(db_migrate_path, destination_root)
+        self.class.migration_lookup_at(migration_source_dir).each do |filepath|
+          filename = filepath.sub /^.+\/(.+\.rb)$/, '\1'
+          migration = filename.sub /^\d+_(.+)\.rb$/, '\1'
+          if self.class.migration_exists?(migration_dest_dir, migration)
+            puts "\e[0m\e[31mFound existing #{migration} migration. Remove it if you want to regenerate.\e[0m"
           else
-            migration_template "db/migrate/#{file}", "db/migrate/#{file.sub(/\d\d_/, '')}"
+            migration_template "db/migrate/#{filename}", "#{db_migrate_path}/#{migration}"
           end
         end
       end
