@@ -23,7 +23,7 @@ module Comfy
           if self.class.migration_exists?(migration_dest_dir, migration)
             puts "\e[0m\e[31mFound existing #{migration} migration. Remove it if you want to regenerate.\e[0m"
           else
-            migration_template "db/migrate/#{filename}", "#{db_migrate_path}/#{migration}"
+            migration_template "db/migrate/#{filename}", "#{db_migrate_path}/#{migration}.rb"
           end
         end
       end

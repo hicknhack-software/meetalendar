@@ -5,13 +5,14 @@ module Meetalendar
   module Admin
     module MeetupApi
       class SearchController < Comfy::Admin::Cms::BaseController
-
-        def show
-          @parameters = parameters
-        end
-
         def new
-          @groups = Meetalendar::MeetupApi.search_groups parameters
+          @parameters = parameters
+          if @parameters
+            @groups = Meetalendar::MeetupApi.search_groups parameters
+          else
+            flash[:danger] = "Find groups parameters for Meetup query not set! (In order to find the right groups you must set the 'find groups parameters' for the meetup group search query in the frontend admin-meetup-groups area.)"
+            redirect_to :admin_meetalendar_groups
+          end
         rescue HTTPClient::BadResponseError => e
           raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
           Rails.logger.warn [e.message, *e.backtrace].join($/)
@@ -22,13 +23,8 @@ module Meetalendar
         private
 
         def parameters
-          if params[:parameters].present?
-            JSON.parse(params[:parameters])
-          else
-            {upcoming_events: true, lat: 51.0769658, lon: 13.6325046, radius: 30, category: '34', page: 200, order: 'distance'}
-          end
+          Meetalendar::Frame.meetup_find_groups_query
         end
-
       end
     end
   end

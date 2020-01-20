@@ -1,5 +1,5 @@
 .page-header
-  = link_to 'Add Groups', :admin_meetalendar_meetup_api_search, class: 'btn btn-primary float-right ml-1'
+  = link_to 'Add Groups', :new_admin_meetalendar_meetup_api_search, class: 'btn btn-primary float-right ml-1'
   = link_to :new_admin_meetalendar_gcal_api_auth, class: 'btn btn-secondary float-right ml-1' do
     i.fas.fa-fw> aria-hidden="true" class=[(Meetalendar::GcalApi::Auth.authorize.nil? rescue true) ? 'fa-exclamation-circle' : 'fa-check-square']
     | Authorize Calendar
@@ -10,9 +10,17 @@
   = comfy_form_with url: :admin_meetalendar, method: :put do |form|
     p
       | See
-      =<> link_to 'API documentation', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
+      =<> link_to 'find groups API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
       | for possible query arguments
-    = form.text_area :parameters, rows: 3, value: JSON.pretty_generate(@parameters)
+    = form.text_area :find_groups_parameters, rows: 3, value: JSON.pretty_generate(@find_groups_parameters)
+    = form.submit "Save", class: "btn btn-primary"
+
+  = comfy_form_with url: :admin_meetalendar, method: :put do |form|
+    p
+      | See
+      =<> link_to 'upcoming events API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/upcoming_events', target: "_blank"
+      | for possible query arguments
+    = form.text_area :upcoming_events_parameters, rows: 3, value: JSON.pretty_generate(@upcoming_events_parameters)
     = form.submit "Save", class: "btn btn-primary"
 
 = paginate @groups, theme: 'comfy'
