@@ -25,6 +25,13 @@ module Meetalendar
     alias config configuration
 
     def sync_calendar(gcal_id = nil)
+      if Meetalendar::MeetupApi::Oauth.tokens.nil?
+        raise ArgumentError, 'Meetup auth token not set.'
+      end
+      if Meetalendar::GcalApi::Auth.authorize.nil?
+        raise ArgumentError, 'Google Calendar auth token not set.'
+      end
+
       gcal_id ||= Meetalendar.config.google_calendar_id
       time_now = Time.now
       time_limit = time_now + 1.year

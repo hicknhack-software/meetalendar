@@ -4,8 +4,7 @@ module Meetalendar
 
     def index
       @groups = Group.page params[:page]
-      @find_groups_parameters = find_groups_parameters
-      @upcoming_events_parameters = upcoming_events_parameters
+      @location_parameters = location_parameters
     end
 
     def edit
@@ -59,21 +58,12 @@ module Meetalendar
       params.fetch(:group, {}).permit(:approved_cities)
     end
 
-    def find_groups_parameters
-      find_groups_parameters = Meetalendar::Frame.meetup_find_groups_query
-      if find_groups_parameters
-        find_groups_parameters
+    def location_parameters
+      meetup_query_location = Meetalendar::Frame.meetup_query_location
+      if meetup_query_location
+        meetup_query_location
       else
-        {category: 0, lat: 0.0, lon: 0.0, radius: 0, upcoming_events: true, order: 'distance', page: 200 }
-      end
-    end
-
-    def upcoming_events_parameters
-      upcoming_events_parameters = Meetalendar::Frame.meetup_upcoming_events_query
-      if upcoming_events_parameters
-        upcoming_events_parameters
-      else
-        {topic_category: 0, lat: 0.0, lon: 0.0, radius: 0, order: 'best', page: 200 }
+        {category: 0, lat: 0.0, lon: 0.0, radius: 0}
       end
     end
   end

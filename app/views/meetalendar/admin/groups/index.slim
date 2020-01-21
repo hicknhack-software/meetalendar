@@ -12,15 +12,7 @@
       | See
       =<> link_to 'find groups API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
       | for possible query arguments
-    = form.text_area :find_groups_parameters, rows: 3, value: JSON.pretty_generate(@find_groups_parameters)
-    = form.submit "Save", class: "btn btn-primary"
-
-  = comfy_form_with url: :admin_meetalendar, method: :put do |form|
-    p
-      | See
-      =<> link_to 'upcoming events API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/upcoming_events', target: "_blank"
-      | for possible query arguments
-    = form.text_area :upcoming_events_parameters, rows: 3, value: JSON.pretty_generate(@upcoming_events_parameters)
+    = form.text_area :location_parameters, rows: 3, value: JSON.pretty_generate(@location_parameters)
     = form.submit "Save", class: "btn btn-primary"
 
 = paginate @groups, theme: 'comfy'

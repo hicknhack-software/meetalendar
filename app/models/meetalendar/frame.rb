@@ -1,21 +1,34 @@
 class Meetalendar::Frame < ApplicationRecord
   self.table_name = "meetalendar_frames"
-  serialize :meetup_find_groups_query, JSON
-  serialize :meetup_upcoming_events_query, JSON
+  serialize :meetup_query_location, JSON
 
-  def self.meetup_find_groups_query
-    JSON.parse(self.first&.meetup_find_groups_query.to_json, symbolize_names: true)
+  def self.meetup_query_location_groups
+    (JSON.parse(self.first&.meetup_query_location.to_json, symbolize_names: true) || {}).map do |parameter|
+      if parameter[0] == :topic_category
+        parameter[0] = :category
+      end
+      parameter
+    end.to_h.merge({upcoming_events: true, fields: 'last_event', order: 'distance', page: 200})
   end
 
-  def self.meetup_find_groups_query=(meetup_find_groups_query)
-    (self.first || self.new).update! meetup_find_groups_query: meetup_find_groups_query
+  def self.meetup_query_location_events
+    (JSON.parse(self.first&.meetup_query_location.to_json, symbolize_names: true) || {}).map do |parameter|
+      if parameter[0] == :category
+        parameter[0] = :topic_category
+      end
+      parameter
+    end.to_h.merge({order: 'time', page: 200, series: true})
   end
 
-  def self.meetup_upcoming_events_query
-    JSON.parse(self.first&.meetup_upcoming_events_query.to_json, symbolize_names: true)
+  def self.meetup_query_location
+    JSON.parse(self.first&.meetup_query_location.to_json, symbolize_names: true)
   end
 
-  def self.meetup_upcoming_events_query=(meetup_upcoming_events_query)
-    (self.first || self.new).update! meetup_upcoming_events_query: meetup_upcoming_events_query
+  def self.meetup_query_location_set?
+    self.first != nil
+  end
+
+  def self.meetup_query_location=(meetup_query_location)
+    (self.first || self.new).update! meetup_query_location: meetup_query_location
   end
 end

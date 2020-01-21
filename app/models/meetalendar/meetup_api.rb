@@ -27,7 +27,11 @@ module Meetalendar
     def self.search_groups(request_params, time_now = nil)
       time_now ||= Time.now
 
-      groups = find_groups(request_params.merge('fields': 'last_event'))
+      if Oauth.tokens.nil?
+        raise ArgumentError, 'Meetup auth token not set.'
+      end
+
+      groups = find_groups(request_params)
       upcoming_events = find_upcoming_events('page': 200)
 
       group_ids = groups.map(&:id)
@@ -53,7 +57,7 @@ module Meetalendar
     end
 
     def self.get_with_auth(path, args, auth)
-      JSON.parse HTTPClient.get_content api_uri(path), query: args.merge('access_token': auth.access_token)
+      JSON.parse HTTPClient.get_content api_uri(path), query: args.merge('access_token': auth&.access_token)
     end
 
     def self.api_uri(path)

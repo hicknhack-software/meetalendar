@@ -6,24 +6,20 @@ module Meetalendar
     module MeetupApi
       class SearchController < Comfy::Admin::Cms::BaseController
         def new
-          @parameters = parameters
-          if @parameters
-            @groups = Meetalendar::MeetupApi.search_groups parameters
+          if Meetalendar::Frame.meetup_query_location_set?
+            @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups
           else
-            flash[:danger] = "Find groups parameters for Meetup query not set! (In order to find the right groups you must set the 'find groups parameters' for the meetup group search query in the frontend admin-meetup-groups area.)"
+            flash[:danger] = "Location unset for Meetup query! (In order to find the right groups you must set the 'query location' for the meetup group search query in the frontend admin-meetup-groups area.)"
             redirect_to :admin_meetalendar_groups
           end
+        rescue ArgumentError => e
+          flash[:danger] = e.exception.to_s
+          redirect_to :admin_meetalendar_groups
         rescue HTTPClient::BadResponseError => e
           raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
           Rails.logger.warn [e.message, *e.backtrace].join($/)
           flash[:danger] = "Could not load groups and events from meetup. Is the client authorized to the Meetup API?"
           redirect_to action: :show
-        end
-
-        private
-
-        def parameters
-          Meetalendar::Frame.meetup_find_groups_query
         end
       end
     end
