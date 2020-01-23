@@ -2,8 +2,8 @@ module Meetalendar
   class Admin::MeetalendarController < Comfy::Admin::Cms::BaseController
     def update
       if location_parameters_present?
-        flash[:success] = "New location parameters: #{location_parameters}"
         Meetalendar::Frame.meetup_query_location=(location_parameters)
+        flash[:success] = "New location parameters: #{location_parameters}"
       else
         flash[:error] = "No location parameters present in update call."
       end
