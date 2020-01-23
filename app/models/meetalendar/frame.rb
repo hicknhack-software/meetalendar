@@ -8,7 +8,7 @@ class Meetalendar::Frame < ApplicationRecord
         parameter[0] = :category
       end
       parameter
-    end.to_h.merge({upcoming_events: true, fields: 'last_event', order: 'distance', page: 200})
+    end.to_h.merge({fields: 'last_event', order: 'distance', page: 200})
   end
 
   def self.meetup_query_location_events
