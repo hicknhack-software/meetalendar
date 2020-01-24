@@ -4,6 +4,8 @@
 = comfy_form_with model: nil, url: :admin_meetalendar_groups, method: :post do |form|
   / TODO(Schau): How to integrate pagination into this form view? (Is this even possible with data that doesn't live in the database?)
 
+  = link_to "Lade weitere", "", class: "btn btn-default button_item green-background load-more", data: { current_offset: 1 }
+
   ul.list
     - @groups.each_with_index do |group, index|
       li.meetup_group
