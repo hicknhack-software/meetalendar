@@ -5,13 +5,13 @@ class Meetalendar::Frame < ApplicationRecord
   def self.meetup_query_groups
     (self.meetup_query_location || {}).transform_keys do |key|
       key == :topic_category && :category || key
-    end.merge(fields: 'last_event', order: 'distance', page: 200)
+    end.merge(fields: ['last_event'], order: 'distance', page: 200)
   end
 
   def self.meetup_query_events
     (self.meetup_query_location || {}).transform_keys do |key|
       key == :category && :topic_category || key
-    end.merge(order: 'time', page: 200, series: true)
+    end.merge(fields: ['series'], order: 'best', page: 200) # order time skips series events
   end
 
   def self.meetup_query_location
