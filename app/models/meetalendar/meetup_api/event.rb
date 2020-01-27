@@ -139,15 +139,15 @@ module Meetalendar
       end
 
       def equal_with_gcal_event?(gcal_event)
-        gcal_event.description == self.gcal_event.description &&
-        gcal_event.end.date_time.to_s == self.gcal_event.end.date_time.to_s &&
-        gcal_event.end.time_zone == self.gcal_event.end.time_zone &&
+        gcal_event.summary == self.gcal_event.summary &&
         gcal_event.location == self.gcal_event.location &&
-        gcal_event.source.title == self.gcal_event.source.title &&
-        gcal_event.source.url == self.gcal_event.source.url &&
+        gcal_event.description == self.gcal_event.description &&
         gcal_event.start.date_time.to_s == self.gcal_event.start.date_time.to_s &&
         gcal_event.start.time_zone == self.gcal_event.start.time_zone &&
-        gcal_event.summary == self.gcal_event.summary
+        gcal_event.end.date_time.to_s == self.gcal_event.end.date_time.to_s &&
+        gcal_event.end.time_zone == self.gcal_event.end.time_zone &&
+        gcal_event.source.title == self.gcal_event.source.title &&
+        gcal_event.source.url == self.gcal_event.source.url
       end
     end
   end
