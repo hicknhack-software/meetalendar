@@ -20,10 +20,9 @@ module Meetalendar
       gcal_ids = gcal_events.map(&:id)
       meetup_events.each do |event|
         if gcal_ids.include? event.gcal_id
-          found_gcal_event = gcal_events.find {|e| e.id == event.gcal_id}
-          if !event.equal_with_gcal_event? found_gcal_event
-            self.calendar_service.update_event(calendar_id, event.gcal_id, event.gcal_event)
-          end
+          found_gcal_event = gcal_events.find { |e| e.id == event.gcal_id }
+          next if event.equal_with_gcal_event? found_gcal_event and found_gcal_event.status != 'cancelled'
+          self.calendar_service.update_event(calendar_id, event.gcal_id, event.gcal_event)
         else
           self.calendar_service.insert_event(calendar_id, event.gcal_event)
         end
