@@ -29,8 +29,8 @@ module Comfy
       end
 
       def generate_initialization
-        copy_file "config/initializers/meetalendar.rb",
-          "config/initializers/meetalendar.rb"
+        #copy_file "config/initializers/meetalendar.rb",
+        #  "config/initializers/meetalendar.rb"
       end
 
       def generate_routing
@@ -41,7 +41,7 @@ module Comfy
       end
 
       def generate_views
-        directory "app/views/meetalendar", "app/views/meetalendar"
+        # directory "app/views/meetalendar", "app/views/meetalendar"
       end
 
       def show_readme
