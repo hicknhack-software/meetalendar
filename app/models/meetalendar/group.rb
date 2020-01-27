@@ -15,15 +15,12 @@ class Meetalendar::Group < ApplicationRecord
       ["#{group.meetup_id}", group.approved_cities]
     end.to_h
 
-    if Meetalendar::Frame.meetup_query_location_set?
-      upcoming_events = Meetalendar::MeetupApi
-        .find_upcoming_events(Meetalendar::Frame.meetup_query_location_events)
-        .select do |event|
-          event.start_time > time_now and group_ids.include?(event.group_id)
-      end
-    else
-      Rails.logger.warn "Location unset for Meetup query! (In order to find the right groups you must set the 'query location' for the meetup group search query in the frontend admin-meetup-groups area.)"
-      abort("ABORT: Location unset for Meetup query! (See logfile.)")
+    raise ActiveRecord::RecordNotFound("Meetup Query Location not configured!") unless Meetalendar::Frame.meetup_query_location?
+
+    upcoming_events = Meetalendar::MeetupApi
+      .find_upcoming_events(Meetalendar::Frame.meetup_query_events)
+      .select do |event|
+        event.start_time > time_now and group_ids.include?(event.group_id)
     end
 
     series_events = upcoming_events.select(&:series?).map do |event|
