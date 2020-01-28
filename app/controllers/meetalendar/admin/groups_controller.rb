@@ -2,11 +2,6 @@ module Meetalendar
   class Admin::GroupsController < Comfy::Admin::Cms::BaseController
     before_action :find_group, only: %i[show edit update destroy]
 
-    def index
-      @groups = Group.page params[:page]
-      @location_parameters = location_parameters
-    end
-
     def edit
     end
 
@@ -56,15 +51,6 @@ module Meetalendar
 
     def update_params
       params.fetch(:group, {}).permit(:approved_cities)
-    end
-
-    def location_parameters
-      meetup_query_location = Meetalendar::Frame.meetup_query_location
-      if meetup_query_location
-        meetup_query_location
-      else
-        {category: 0, lat: 0.0, lon: 0.0, radius: 0}
-      end
     end
   end
 end

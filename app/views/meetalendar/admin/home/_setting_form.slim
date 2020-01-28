@@ -1,0 +1,7 @@
+= comfy_form_with model: @setting, url: :admin_meetalendar_settings, scope: :setting do |form|
+  p
+    | See
+    =<> link_to 'find groups API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
+    | for possible query arguments
+  = form.text_area :meetup_query_json, rows: 3
+  = form.submit "Save", class: "btn btn-primary"

@@ -7,13 +7,7 @@
     i.fas.fa-fw> aria-hidden="true" class=[(Meetalendar::MeetupApi::Oauth.tokens.nil? rescue true) ? 'fa-exclamation-circle' : 'fa-check-square']
     | Authorize Meetup
   h2 = 'Subscribed Meetup Groups'
-  = comfy_form_with url: :admin_meetalendar, method: :put do |form|
-    p
-      | See
-      =<> link_to 'find groups API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
-      | for possible query arguments
-    = form.text_area :location_parameters, rows: 3, value: JSON.pretty_generate(@location_parameters)
-    = form.submit "Save", class: "btn btn-primary"
+  = render partial: 'setting_form'
 
 = paginate @groups, theme: 'comfy'
 

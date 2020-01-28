@@ -15,9 +15,9 @@ class Meetalendar::Group < ApplicationRecord
       ["#{group.meetup_id}", group.approved_cities]
     end.to_h
 
-    raise ActiveRecord::RecordNotFound("Meetup Query Location not configured!") unless Meetalendar::Frame.meetup_query_location?
+    raise ActiveRecord::RecordNotFound("No Setting present!") unless Meetalendar::Setting.present?
 
-    upcoming_events = Meetalendar::MeetupApi.find_upcoming_events(Meetalendar::Frame.meetup_query_events).select do |event|
+    upcoming_events = Meetalendar::MeetupApi.find_upcoming_events(Meetalendar::Setting.instance.meetup_events_query).select do |event|
       event.start_time.between?(time_now, time_now + 3.months) and group_ids.include?(event.group_id)
     end
 

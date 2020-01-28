@@ -18,13 +18,13 @@ module Meetalendar
           Rails.logger.warn [e.message, *e.backtrace].join($/)
           flash[:danger] = e.message.to_s
         ensure
-          redirect_to admin_meetalendar_groups_path unless performed?
+          redirect_to :admin_meetalendar unless performed?
         end
 
         def failure
           # TODO(Schau): Possibly there are arguments given to this function/route containing more info on why meetup api authorization failed.
-          flash[:error] = "Meetup.com API authorization failed."
-          redirect_to admin_meetalendar_groups_path
+          flash[:danger] = "Meetup.com API authorization failed."
+          redirect_to :admin_meetalendar
         end
 
       end
