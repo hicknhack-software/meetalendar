@@ -10,10 +10,7 @@ module Meetalendar
             flash[:danger] = "Missing search settings!"
             redirect_to :admin_meetalendar
           end
-          @group_ids = Meetalendar::Group.pluck(:meetup_id)
-          @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Setting.instance.meetup_groups_query do |group|
-            not @group_ids.include? group.id
-          end
+          @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Setting.instance.meetup_groups_query, select_proc: Meetalendar::Group.only_new
         rescue HTTPClient::BadResponseError => e
           raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
           Rails.logger.warn [e.message, *e.backtrace].join($/)

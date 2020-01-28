@@ -32,4 +32,10 @@ class Meetalendar::Group < ApplicationRecord
       approved_cities.empty? or not event.venue? or approved_cities.include? event.city.downcase
     end
   end
+
+  def self.only_new
+    meetup_ids = self.pluck(:meetup_id)
+    Proc.new { |group| not meetup_ids.include? group.id }
+  end
+
 end
