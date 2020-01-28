@@ -12,7 +12,7 @@ module Meetalendar
         Group.find_or_initialize_by(meetup_id: attr_params[:id]).update!(create_attributes(attr_params))
       end
       flash[:success] = "Created or Updated new Group Subscription(s)."
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     def update
@@ -27,7 +27,7 @@ module Meetalendar
     def destroy
       @group.destroy
       flash[:success] = 'Group deleted'
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     protected
@@ -36,7 +36,7 @@ module Meetalendar
       @group = Group.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       flash.now[:danger] = 'Group not found'
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     def create_attributes(attr)
