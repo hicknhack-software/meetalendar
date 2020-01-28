@@ -4,12 +4,15 @@ module Meetalendar
   module GcalSync
 
     def self.update_events(meetup_events, calendar_id, time_now, time_limit)
-      time_min = DateTime.parse(time_now.to_s).to_s
-      time_max = DateTime.parse(time_limit.to_s).to_s
+      gcal_events = self.calendar_service.list_events(calendar_id,
+                                                      time_min: time_now.to_datetime,
+                                                      time_max: time_limit.to_datetime,
+                                                      show_deleted: true)
+                        .items.select do |gcal_event|
+        gcal_event.start.date_time.between?(time_now, time_now + 3.months)
+      end
 
-      gcal_events = self.calendar_service.list_events(calendar_id, time_min: time_min, time_max: time_max, show_deleted: true).items
-
-      meetup_ids = meetup_events.map(&:gcal_id)
+      meetup_ids = meetup_events.map &:gcal_id
       gcal_events.each do |gcal_event|
         is_active = gcal_event.status != 'cancelled'
         from_us = Meetalendar::MeetupApi::Event.gcal_id? gcal_event.id
@@ -17,7 +20,7 @@ module Meetalendar
         self.calendar_service.delete_event(calendar_id, gcal_event.id) if is_active and from_us and not in_meetup
       end
 
-      gcal_ids = gcal_events.map(&:id)
+      gcal_ids = gcal_events.map &:id
       meetup_events.each do |event|
         if gcal_ids.include? event.gcal_id
           found_gcal_event = gcal_events.find { |e| e.id == event.gcal_id }
