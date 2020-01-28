@@ -8,7 +8,9 @@ class ActionDispatch::Routing::Mapper
         resource :meetalendar, controller: 'meetalendar', only: [:update] do 
           resources :groups, except: [:show, :new]
           namespace :meetup_api do
-            resource :search, controller: 'search', only: [:new]
+            resource :search, controller: 'search', only: [:new] do
+              get 'load_more'
+            end
             resource :oauth, controller: 'oauth', only: [:new] do
               get 'callback'
               get 'failure'
