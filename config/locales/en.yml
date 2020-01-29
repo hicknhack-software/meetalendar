@@ -51,3 +51,4 @@ en:
         event_in_at: "In %{city}, At %{start_time}"
     group:
       approved_cities: "Approved Cities"
+      approved_cities_default: "All"

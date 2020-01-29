@@ -8,17 +8,18 @@ module Meetalendar
 
         def load_more
           @offset = params[:offset].to_i
+          @per_page = per_page
+          puts "##### @offset = " + @offset.to_s + " @per_page = " + @per_page.to_s
 
-          puts "##### @offset = " + @offset.to_s
-          
-          @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups(@offset)
+          @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups.merge({ page: @per_page, offset: @offset })
           render layout: false, content_type: 'text/javascript'
         end
 
         def new
           if Meetalendar::Frame.meetup_query_location_set?
             @offset = 0
-            @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups(@offset)
+            @per_page = per_page
+            @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups.merge({ page: @per_page, offset: @offset })
           else
             flash[:danger] = "Location unset for Meetup query! (In order to find the right groups you must set the 'query location' for the meetup group search query in the frontend admin-meetup-groups area.)"
             redirect_to :admin_meetalendar_groups
@@ -68,7 +69,11 @@ module Meetalendar
         #   end
         # end
 
+        private
         
+        def per_page
+          10
+        end
       end
     end
   end

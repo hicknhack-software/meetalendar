@@ -1,4 +1,2 @@
 var li = $('li#load-more');
-var form = $('from#meetup-group-form');
-
-li.replaceWith('<%= escape_javascript(render partial: "groups_list", locals: { groups: @groups, offset: @offset }) %>');
+li.replaceWith('<%= escape_javascript(render partial: "groups_list", locals: { groups: @groups, offset: @offset, per_page: @per_page }) %>');
