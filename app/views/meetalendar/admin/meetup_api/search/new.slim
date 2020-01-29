@@ -59,9 +59,10 @@
   ul.list
     = render partial: "groups_list", locals: { groups: @groups, offset: @offset, per_page: @per_page }
 
+  = submit_tag "Add selected Meetup Groups", class: "btn btn-primary btn-large"
+  = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
+
 / li#load-more
 /   = link_to "Lade mehr", load_more_admin_meetalendar_meetup_api_search_path(offset: offset + 1), remote: true, class: "load-more"
 
-  = submit_tag "Add selected Meetup Groups", class: "btn btn-primary btn-large"
   / = link_to 'Add selected Meetup Groups', :admin_meetalendar_groups, method: :post, remote: true, class: "btn btn-primary btn-large"
-  = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
