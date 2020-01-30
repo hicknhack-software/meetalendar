@@ -7,8 +7,7 @@
     = hidden_field_tag "[groups][#{current_index}][attr][name]", group.name, data: { index: current_index }
     = hidden_field_tag "[groups][#{current_index}][attr][link]", group.link, data: { index: current_index }
     = label_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities'), class: 'm-1'
-    / = text_field_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities_default'), class: 'm-1'
-    = text_field_tag "[groups][#{current_index}][attr][cities]", "All", data: { index: current_index }
+    = text_field_tag "[groups][#{current_index}][attr][cities]", "", data: { index: current_index }
 
     .events
       - unless group.last_event.nil?

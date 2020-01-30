@@ -24,7 +24,7 @@ ul.list
         .col-md-8.item
           .item-content
             .item-title = link_to group.name, group.meetup_link, target: "_blank"
-            .item_meta = "Approved Cities: #{group.approved_cities.blank? ? 'All' : group.approved_cities}, Id: #{group.meetup_id}"
+            .item_meta = "Approved Cities: #{group.approved_cities.blank? ? t('meetalendar.group.approved_cities_default') : group.approved_cities}, Id: #{group.meetup_id}"
 
         .col-md-4.d-flex.align-items-center.justify-content-md-end
           .btn-group.btn-group-sm
