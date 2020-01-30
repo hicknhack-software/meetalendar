@@ -13,7 +13,7 @@ $ ->
 
     $(this).find('input[data-index]').each ->
       if !checked_indices.includes($(this).attr 'data-index')
-        $(this).remove()
+        $(this).attr('disabled', true)
       return
 
     return

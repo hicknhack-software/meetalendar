@@ -1,7 +1,7 @@
 .page-header
   h2 = t('meetalendar.admin.group_search.select_groups')
 
-= form_tag :admin_meetalendar_groups, method: :post, remote: true, enforce_utf8: true, class: "meetup-group-form" do
+= form_tag :admin_meetalendar_groups, method: :post, class: "meetup-group-form" do
   ul.list
     = render partial: "groups_list", locals: { groups: @groups, offset: @offset, per_page: @per_page }
 
