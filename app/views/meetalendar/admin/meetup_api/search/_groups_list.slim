@@ -1,135 +1,14 @@
-/ - groups.each_with_index do |group, index|
-/   li.meetup_group
-/     = form.fields_for('groups', index: index) do |group_fields|
-/       = link_to t('meetalendar.admin.group_search.view_on_meetup'), group.link, class: 'btn btn-secondary ml-4 float-right'
-/       = group_fields.check_box :selected, checked: false, bootstrap: {layout: 'horizontal', custom_control: true, label: {text: group.name}}, include_hidden: false
-/       = group_fields.fields_for('attr', group) do |attr_fields|
-/         = attr_fields.hidden_field :id
-/         = attr_fields.hidden_field :name
-/         = attr_fields.hidden_field :link
-/         = attr_fields.text_field :cities, value: '', bootstrap: {layout: 'horizontal', label: {text: t('meetalendar.group.approved_cities')}}, placeholder: "All"
-
-/       .events
-/         - unless group.last_event.nil?
-/           .past_events
-/             h5 = t('meetalendar.admin.group_search.last_event')
-/             - event = group.last_event
-/             .event
-/               .name = event.name
-/               .time = t('meetalendar.admin.group_search.event_at', start_time: l(group.last_event.start_time, format: :long))
-/               .yes_rsvp_count = t('meetalendar.admin.group_search.rsvp_count', count: group.last_event.yes_rsvp_count)
-
-/         .upcoming_events
-/           h5 = t('meetalendar.admin.group_search.next_events', count: group.upcoming_events.count)
-/           - group.upcoming_events.each do |event|
-/             .event
-/               .name = link_to event.name, event.link
-/               .time = t('meetalendar.admin.group_search.event_in_at', city: event.city, start_time: l(event.start_time, format: :long))
-/               .description = sanitize(event.description)
-/       .border-top.my-3
-
-/ li.load-more
-/   = link_to "Lade mehr", load_more_admin_meetalendar_meetup_api_search_path(offset: @offset + 1), remote: true, class: "load-more"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/ NOTE(Schau): I need to take care of the index variable. It needs to be pushed foreward by the offset
-/ Lets say one displays 10 groups per page - then on the second page one want's to start from 10 (if started at 0) but not at 0-9 again
-
-
-
-/ - groups.each_with_index do |group, index|
-/   - current_index = offset * per_page + index
-/   li.meetup_group
-/     = link_to t('meetalendar.admin.group_search.view_on_meetup'), group.link, class: 'btn btn-secondary ml-4 float-right'
-/     / = check_box_tag :selected, checked: false, bootstrap: {layout: 'horizontal', custom_control: true, label: {text: group.name}}, include_hidden: false    
-/     = check_box_tag "[groups][#{current_index}][selected]", "1", false
-/     / = hidden_field_tag :id
-/     / = hidden_field_tag :name
-/     / = hidden_field_tag :link
-/     = hidden_field_tag "[groups][#{current_index}][attr][id]"
-/     = hidden_field_tag "[groups][#{current_index}][attr][name]"
-/     = hidden_field_tag "[groups][#{current_index}][attr][link]"
-/     / = text_field_tag :cities, value: '', bootstrap: {layout: 'horizontal', label: {text: t('meetalendar.group.approved_cities')}}, placeholder: "All"
-/     = label_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities')
-/     / = text_field_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities')
-/     = text_field_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities_default')
-
-/     .events
-/       - unless group.last_event.nil?
-/         .past_events
-/           h5 = t('meetalendar.admin.group_search.last_event')
-/           - event = group.last_event
-/           .event
-/             .name = event.name
-/             .time = t('meetalendar.admin.group_search.event_at', start_time: l(group.last_event.start_time, format: :long))
-/             .yes_rsvp_count = t('meetalendar.admin.group_search.rsvp_count', count: group.last_event.yes_rsvp_count)
-
-/       .upcoming_events
-/         h5 = t('meetalendar.admin.group_search.next_events', count: group.upcoming_events.count)
-/         - group.upcoming_events.each do |event|
-/           .event
-/             .name = link_to event.name, event.link
-/             .time = t('meetalendar.admin.group_search.event_in_at', city: event.city, start_time: l(event.start_time, format: :long))
-/             .description = sanitize(event.description)
-/     .border-top.my-3
-
-/ li#load-more
-/   = link_to "Lade mehr", load_more_admin_meetalendar_meetup_api_search_path(offset: offset + 1), remote: true, class: "load-more"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - groups.each_with_index do |group, index|
   - current_index = offset * per_page + index
   li.meetup_group
     = link_to t('meetalendar.admin.group_search.view_on_meetup'), group.link, class: 'btn btn-secondary ml-4 float-right'
-    = check_box_tag "[groups][#{current_index}][selected]", "1", false, class: 'm-1'
-    = hidden_field_tag "[groups][#{current_index}][attr][id]", group.id
-    = hidden_field_tag "[groups][#{current_index}][attr][name]", group.name
-    = hidden_field_tag "[groups][#{current_index}][attr][link]", group.link
+    = check_box_tag "[groups][#{current_index}][selected]", "1", false, class: 'm-1', data: { index: current_index }
+    = hidden_field_tag "[groups][#{current_index}][attr][id]", group.id, data: { index: current_index }
+    = hidden_field_tag "[groups][#{current_index}][attr][name]", group.name, data: { index: current_index }
+    = hidden_field_tag "[groups][#{current_index}][attr][link]", group.link, data: { index: current_index }
     = label_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities'), class: 'm-1'
     / = text_field_tag "[groups][#{current_index}][attr][cities]", t('meetalendar.group.approved_cities_default'), class: 'm-1'
-    = text_field_tag "[groups][#{current_index}][attr][cities]", "All"
+    = text_field_tag "[groups][#{current_index}][attr][cities]", "All", data: { index: current_index }
 
     .events
       - unless group.last_event.nil?
@@ -151,4 +30,4 @@
     .border-top.my-3
 
 li#load-more
-  = link_to "Lade mehr", load_more_admin_meetalendar_meetup_api_search_path(offset: offset + 1), remote: true, class: "load-more"
+  = link_to "Lade mehr", new_admin_meetalendar_meetup_api_search_path(offset: offset + 1), remote: true

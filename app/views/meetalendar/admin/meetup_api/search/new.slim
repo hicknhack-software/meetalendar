@@ -1,68 +1,9 @@
 .page-header
   h2 = t('meetalendar.admin.group_search.select_groups')
 
-/ = comfy_form_with model: nil, url: :admin_meetalendar_groups, method: :post, id: "meetup-group-form" do |form|
-/   = form.form_actions do
-/     = submit_tag "Add selected Meetup Groups", class: "btn btn-primary"
-/     = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
-
-/ = form_tag url: :admin_meetalendar_groups, method: :post, remote: true, enforce_utf8: true, class: "meetup-group-form" do
-/   ul.list
-/     / = render partial: "groups_list", locals: { groups: @groups, offset: @offset, form: form }
-/     = render partial: "groups_list", locals: { groups: @groups, offset: @offset, per_page: @per_page }
-
-/   /   - @groups.each_with_index do |group, index|
-/   /     li.meetup_group
-/   /       = form.fields_for('groups', index: index) do |group_fields|
-/   /         = link_to t('meetalendar.admin.group_search.view_on_meetup'), group.link, class: 'btn btn-secondary ml-4 float-right'
-/   /         = group_fields.check_box :selected, checked: false, bootstrap: {layout: 'horizontal', custom_control: true, label: {text: group.name}}, include_hidden: false
-/   /         = group_fields.fields_for('attr', group) do |attr_fields|
-/   /           = attr_fields.hidden_field :id
-/   /           = attr_fields.hidden_field :name
-/   /           = attr_fields.hidden_field :link
-/   /           = attr_fields.text_field :cities, value: '', bootstrap: {layout: 'horizontal', label: {text: t('meetalendar.group.approved_cities')}}, placeholder: "All"
-
-/   /         .events
-/   /           - unless group.last_event.nil?
-/   /             .past_events
-/   /               h5 = t('meetalendar.admin.group_search.last_event')
-/   /               - event = group.last_event
-/   /               .event
-/   /                 .name = event.name
-/   /                 .time = t('meetalendar.admin.group_search.event_at', start_time: l(group.last_event.start_time, format: :long))
-/   /                 .yes_rsvp_count = t('meetalendar.admin.group_search.rsvp_count', count: group.last_event.yes_rsvp_count)
-
-/   /           .upcoming_events
-/   /             h5 = t('meetalendar.admin.group_search.next_events', count: group.upcoming_events.count)
-/   /             - group.upcoming_events.each do |event|
-/   /               .event
-/   /                 .name = link_to event.name, event.link
-/   /                 .time = t('meetalendar.admin.group_search.event_in_at', city: event.city, start_time: l(event.start_time, format: :long))
-/   /                 .description = sanitize(event.description)
-/   /         .border-top.my-3
-
-/   /     / = link_to "Test Lade weitere", "", class: "btn btn-default button_item green-background load-more", data: { current_offset: 1 }
-
-/   / = form.form_actions do
-/   /   = submit_tag "Add selected Meetup Groups", class: "btn btn-primary"
-/   /   = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
-
-/   = submit_tag "Add selected Meetup Groups", class: "btn btn-primary btn-large"
-/   = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
-
-
-
-
-/ = form_tag url: :admin_meetalendar_groups, method: :post, remote: true, enforce_utf8: true, class: "meetup-group-form" do
-
 = form_tag :admin_meetalendar_groups, method: :post, remote: true, enforce_utf8: true, class: "meetup-group-form" do
   ul.list
     = render partial: "groups_list", locals: { groups: @groups, offset: @offset, per_page: @per_page }
 
-  = submit_tag "Add selected Meetup Groups", class: "btn btn-primary btn-large"
+  = submit_tag "Add selected Meetup Groups", class: "btn btn-primary btn-large submit-button"
   = link_to 'Cancel', :admin_meetalendar_groups, class: "btn btn-link"
-
-/ li#load-more
-/   = link_to "Lade mehr", load_more_admin_meetalendar_meetup_api_search_path(offset: offset + 1), remote: true, class: "load-more"
-
-  / = link_to 'Add selected Meetup Groups', :admin_meetalendar_groups, method: :post, remote: true, class: "btn btn-primary btn-large"

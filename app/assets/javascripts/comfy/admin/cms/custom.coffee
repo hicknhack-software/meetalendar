@@ -3,12 +3,17 @@
 #= require_self
 #
 
-# $ ->
-#   $(".load-more").click (e) ->
-#     e.preventDefault()
-#     alert "load-more?"
+$ ->
+  $("form").submit ->
+    checked_checkboxes = $(this).find('input[type="checkbox"]').filter ->
+      return $(this).is(':checked') == true
 
-#     current_offset = e.currentTarget.dataset.currentOffset
-#     $.get "/admin/meetalendar/meetup_api/search/new?page=#{current_offset}", ((data) ->
-#       console.log data
-#       return), 'json'
+    checked_indices = (checked_checkboxes.map ->
+      return $(this).attr 'data-index').toArray()
+
+    $(this).find('input[data-index]').each ->
+      if !checked_indices.includes($(this).attr 'data-index')
+        $(this).remove()
+      return
+
+    return
