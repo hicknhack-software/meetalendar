@@ -12,6 +12,9 @@ de:
         select_groups: "Neue Meetup Gruppen auswählen"
         event_at: "Am %{start_time}"
         rsvp_count: "%{count} Teilnehmer"
+        past_event_count: "%{count} Vergangene Events"
+        proposed_event_count: "%{count} Vorgeschlagene Events"
+        draft_event_count: "%{count} Konzeptionierte Events"
         next_events:
           zero: "Keine Events geplant"
           one: "Nächstes Event"

@@ -31,19 +31,7 @@ module Meetalendar
 
       groups = find_groups(request_params)
       groups.select! &select_proc if select_proc != nil
-      upcoming_events = find_upcoming_events('page': 200)
-
-      group_ids = groups.map(&:id)
-      filtered_events = upcoming_events.select do |e|
-        e.start_time > time_now and group_ids.include?(e.group_id)
-      end
-
-      grouped_events = filtered_events.group_by(&:group_id)
-      grouped_events.default = []
-
-      groups.each do |group|
-        group.upcoming_events = grouped_events[group.id].sort_by(&:start_time).take(2)
-      end
+      groups
     end
 
     private
