@@ -24,14 +24,13 @@ module Meetalendar
       end
     end
 
-    def self.search_groups(request_params, time_now = nil)
+    def self.search_groups(request_params, time_now: nil, select_proc: nil)
       time_now ||= Time.now
 
-      if Oauth.tokens.nil?
-        raise ArgumentError, 'Meetup auth token not set.'
-      end
+      raise ArgumentError, 'Meetup auth token not set.' if Oauth.tokens.nil?
 
       groups = find_groups(request_params)
+      groups.select! &select_proc if select_proc != nil
       upcoming_events = find_upcoming_events('page': 200)
 
       group_ids = groups.map(&:id)

@@ -7,25 +7,19 @@ module Meetalendar
       class SearchController < Comfy::Admin::Cms::BaseController
         def new
           respond_to do |format|
-            format.html {              
-              begin
-                if Meetalendar::Frame.meetup_query_location_set?
-                  @offset = 0
-                  @per_page = per_page
-                  @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups.merge({ page: @per_page, offset: @offset })
-                else
-                  flash[:danger] = "Location unset for Meetup query! (In order to find the right groups you must set the 'query location' for the meetup group search query in the frontend admin-meetup-groups area.)"
-                  redirect_to :admin_meetalendar_groups
-                end
-              rescue ArgumentError => e
-                flash[:danger] = e.exception.to_s
-                redirect_to :admin_meetalendar_groups
-              rescue HTTPClient::BadResponseError => e
-                raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
-                Rails.logger.warn [e.message, *e.backtrace].join($/)
-                flash[:danger] = "Could not load groups and events from meetup. Is the client authorized to the Meetup API?"
-                redirect_to action: :show
+            format.html {
+              unless Meetalendar::Setting.present?
+                flash[:danger] = "Missing search settings!"
+                redirect_to :admin_meetalendar
               end
+              @offset = 0
+              @per_page = per_page
+              @groups = Meetalendar::MeetupApi.search_groups Meetalendar::Frame.meetup_query_location_groups.merge({ page: @per_page, offset: @offset })
+            rescue HTTPClient::BadResponseError => e
+              raise unless e.res&.status == HTTP::Status::UNAUTHORIZED
+              Rails.logger.warn [e.message, *e.backtrace].join($/)
+              flash[:danger] = "Could not load groups and events from meetup. Is the client authorized to the Meetup API?"
+              redirect_to :admin_meetalendar
             }
             format.js {
               @offset = params[:offset].to_i
@@ -37,7 +31,7 @@ module Meetalendar
         end
 
         private
-        
+
         def per_page
           10
         end

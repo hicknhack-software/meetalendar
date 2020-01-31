@@ -2,11 +2,6 @@ module Meetalendar
   class Admin::GroupsController < Comfy::Admin::Cms::BaseController
     before_action :find_group, only: %i[show edit update destroy]
 
-    def index
-      @groups = Group.page params[:page]
-      @location_parameters = location_parameters
-    end
-
     def edit
     end
 
@@ -17,7 +12,7 @@ module Meetalendar
         Group.find_or_initialize_by(meetup_id: attr_params[:id]).update!(create_attributes(attr_params))
       end
       flash[:success] = "Created or Updated new Group Subscription(s)."
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     def update
@@ -32,7 +27,7 @@ module Meetalendar
     def destroy
       @group.destroy
       flash[:success] = 'Group deleted'
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     protected
@@ -41,7 +36,7 @@ module Meetalendar
       @group = Group.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       flash.now[:danger] = 'Group not found'
-      redirect_to action: :index
+      redirect_to :admin_meetalendar
     end
 
     def create_attributes(attr)
@@ -56,15 +51,6 @@ module Meetalendar
 
     def update_params
       params.fetch(:group, {}).permit(:approved_cities)
-    end
-
-    def location_parameters
-      meetup_query_location = Meetalendar::Frame.meetup_query_location
-      if meetup_query_location
-        meetup_query_location
-      else
-        {category: 0, lat: 0.0, lon: 0.0, radius: 0}
-      end
     end
   end
 end
