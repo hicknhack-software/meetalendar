@@ -25,7 +25,7 @@ class Meetalendar::Setting < ApplicationRecord
   end
 
   def meetup_query
-    super || meetup_query_default
+    unless super.empty?; super else meetup_query_default end
   end
 
   def meetup_query_default
