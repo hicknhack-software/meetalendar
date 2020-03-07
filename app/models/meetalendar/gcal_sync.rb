@@ -9,7 +9,7 @@ module Meetalendar
                                                       time_max: time_limit.to_datetime,
                                                       show_deleted: true)
                         .items.select do |gcal_event|
-        gcal_event.start.date_time.between?(time_now, time_now + 3.months)
+        gcal_event.start.date_time&.between?(time_now, time_now + 3.months)
       end
 
       meetup_ids = meetup_events.map &:gcal_id
