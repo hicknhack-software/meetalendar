@@ -42,6 +42,12 @@ $ bundle exec rake db:migrate
 ```
 
 ## Contributing
+
+Tips for Developers:
+
+- To test if your changes work you must run the rake tast from the directory in wich the ruby gem is used. (In this gems directory the rake task will fail.)
+- Make development easier by using: `gem 'meetalendar', path: 'C:\git-repos\github-meetalendar'` (without the "` `") in your target/gem-hosts project `Gemfile`. So that you can instantly test your changes by rerunning `bundle install` thus updating the changes in the gem into your host project.
+
 These goals are still open:
 
 - Introduce new view (and functionality) that allows to search for upcoming events of the already chosen meetup groups. There the user can select individual events that he wants to transcribe/syncronize to the google calendar. The view should list events up to round about 2-3 month in the future if possible.

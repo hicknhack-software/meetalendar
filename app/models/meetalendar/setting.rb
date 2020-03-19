@@ -21,7 +21,7 @@ class Meetalendar::Setting < ApplicationRecord
     self.meetup_query.transform_keys do |key|
       key == :category && :topic_category || key
     end.merge(page: 200, fields: 'series',
-      only: 'events.id,events.name,events.description,events.link,events.time,events.duration,events.group.name,events.venue')
+      only: 'events.id,events.name,events.description,events.link,events.time,events.duration,events.group,events.venue')
   end
 
   def meetup_query
