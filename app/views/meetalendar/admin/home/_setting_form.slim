@@ -4,4 +4,7 @@
     =<> link_to 'find groups API', 'https://www.meetup.com/de-DE/meetup_api/docs/find/groups', target: "_blank"
     | for possible query arguments
   = form.text_area :meetup_query_json, rows: 3
+  = form.text_field :report_to_emails
+  = form.text_field :report_every_xth_time
+
   = form.submit "Save", class: "btn btn-primary"
