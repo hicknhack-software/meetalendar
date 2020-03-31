@@ -1,0 +1,22 @@
+Meetalendar Synchronization Report
+==================================
+
+Added and Deleted Events
+------------------------
+
+<%= render partial: 'events_grouped', locals: { events_grouped: @added_and_deleted_grouped } %>
+
+Deleted Events
+--------------
+
+<%= render partial: 'events_grouped', locals: { events_grouped: @deleted_grouped } %>
+
+Added Events
+------------
+
+<%= render partial: 'events_grouped', locals: { events_grouped: @added_grouped } %>
+
+Updated Events
+--------------
+
+<%= render partial: 'events_grouped', locals: { events_grouped: @updated_grouped } %>

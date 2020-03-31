@@ -39,18 +39,18 @@ module Meetalendar
       Meetalendar::GcalSync.update_events upcoming_events, gcal_id, time_now, time_limit
 
       meetalendar_instance = Meetalendar::Setting.instance
-      if meetalendar_instance.next_report_in <= 0
-        current_report = meetalendar_instance.current_report
-        self.send_report_to_mails(current_report, meetalendar_instance.report_to_emails_array)
+      if meetalendar_instance.next_report?
+        self.send_report_to_mails(meetalendar_instance.report_to_emails_array, meetalendar_instance.current_report)
+        meetalendar_instance.next_report_in_reset
       else
         meetalendar_instance.next_report_in_decrease
       end
       meetalendar_instance.save!
     end
 
-    def send_report_to_mails(report, mails)
-      mails.each do |mail|
-        
+    def send_report_to_mails(emails, report)
+      emails.each do |email|
+        ReportMailer.email_report(email, report).deliver_now
       end
     end
   end

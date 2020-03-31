@@ -1,0 +1,14 @@
+<ul>
+<% events_grouped.each do |event_group| %>
+  <li>Group: <%= event_group.second&.first&.second["group_name"] %></li>
+  <ul>
+  <% event_group.second&.each do |event| %>
+    <li>Name: <%= event.second["name"] %></li>
+    <ul>
+      <li>Start: <%= event.second["start"] %></li>
+      <li>Link: <a href="<%= event.second["link"] %>" target="_blank"><%= event.second["link"] %></a></li>
+    </ul>
+  <% end %>
+  </ul>
+<% end %>
+</ul>

@@ -70,6 +70,10 @@ class Meetalendar::Setting < ApplicationRecord
     self.report_in = 0
   end
 
+  def next_report?
+    self.next_report_in <= 0
+  end
+
   def next_report_in
     report_in
   end

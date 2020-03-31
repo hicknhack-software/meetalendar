@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Meetalendar Synchronization Report</h1>
+
+      <h2>Added and Deleted Events</h2>
+      <%= render partial: 'events_grouped', locals: { events_grouped: @added_and_deleted_grouped } %>
+
+      <h2>Deleted Events</h2>
+      <%= render partial: 'events_grouped', locals: { events_grouped: @deleted_grouped } %>
+
+      <h2>Added Events</h2>
+      <%= render partial: 'events_grouped', locals: { events_grouped: @added_grouped } %>
+
+      <h2>Updated Events</h2>
+      <%= render partial: 'events_grouped', locals: { events_grouped: @updated_grouped } %>
+
+  </body>
+</html>
